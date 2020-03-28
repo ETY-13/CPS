@@ -5,6 +5,8 @@
 using std::cos;
 using std::sin;
 
+using std::make_shared;
+
 // Circle
 
 Circle::Circle(double radius):_radius_(radius) {}
@@ -17,6 +19,9 @@ double Circle::getWidth() const{
 	return getHeight();
 }
 
+void Circle::generatePostScript(std::ostream& os) const {
+
+}
 
 // Polygon
 
@@ -49,6 +54,10 @@ double Polygon::getWidth() const {
 	return width;
 }
 
+void Polygon::generatePostScript(std::ostream& os) const {
+
+}
+
 // Rectangle
 
 Rectangle::Rectangle(double width, double height) : _width_(width), _height_(height) {}
@@ -59,6 +68,10 @@ double Rectangle::getHeight() const {
 
 double Rectangle::getWidth() const {
 	return _width_;
+}
+
+void Rectangle::generatePostScript(std::ostream& os) const {
+
 }
 
 // Spacer
@@ -73,3 +86,29 @@ Square::Square(double sideLength): Polygon(4, sideLength) {}
 
 Triangle::Triangle(double sideLength): Polygon(3, sideLength) {}
 
+
+// Utility functions
+
+std::shared_ptr<Shape> makeCircle(double radius) {
+	return make_shared<Circle>(radius);
+}
+
+std::shared_ptr<Shape> makePolygon(int numSides, double length) {
+	return make_shared<Polygon>(numSides,length);
+}
+
+std::shared_ptr<Shape> makeRectangle(double width, double height) {
+	return make_shared<Rectangle>(width,height);
+}
+
+std::shared_ptr<Shape> makeSpacer(double width, double height) {
+	return make_shared<Spacer>(width,height);
+}
+
+std::shared_ptr<Shape> makeSquare(double length) {
+	return make_shared<Square>(length);
+}
+
+std::shared_ptr<Shape> makeTriangle(double length) {
+	return make_shared<Triangle>(length);
+}
