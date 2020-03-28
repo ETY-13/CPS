@@ -3,8 +3,8 @@
 #define CATCH_CONFIG_FAST_COMPILE
 #define CATCH_CONFIG_RUNNER
 #include"catch.hpp"
-#include<iostream>
 
+#include<iostream>
 using std::cout;
 using std::endl;
 
@@ -15,8 +15,7 @@ int main(int argc, char* argv[]) {
 
     result = session.applyCommandLine(argc, argv);
 
-    if (result !=0) 
-    {
+    if (result !=0){
         return result;
     }
 

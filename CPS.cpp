@@ -9,12 +9,12 @@ using std::sin;
 
 Circle::Circle(double radius):_radius_(radius) {}
 
-double Circle::height() const {
+double Circle::getHeight() const {
 	return _radius_ * 2;
 }
 
-double Circle::width() const{
-	return height();
+double Circle::getWidth() const{
+	return getHeight();
 }
 
 
@@ -22,7 +22,7 @@ double Circle::width() const{
 
 Polygon::Polygon(int numSides, double sideLength):_numSides_(numSides),_sideLength_(sideLength) {}
 
-double Polygon::height() const {
+double Polygon::getHeight() const {
 	double height = 0.0;
 
 	if (_numSides_ % 2 == 0) {
@@ -34,7 +34,7 @@ double Polygon::height() const {
 	return height;
 }
 
-double Polygon::width() const {
+double Polygon::getWidth() const {
 	double width = 0.0;
 
 	if (_numSides_ % 4 == 0) {
@@ -44,7 +44,7 @@ double Polygon::width() const {
 		width = _sideLength_ / sin(3.14 / _numSides_);
 	}
 	else {
-		width = (_sideLength_ * sin(3.14 * (_numSides_ - 1) / 2 * _numSides_)) / (sin(3.14 / _numSides_));
+		width = (_sideLength_ * sin(3.14 * (_numSides_ - 1.0) / 2 * _numSides_)) / (sin(3.14 / _numSides_));
 	}
 	return width;
 }
@@ -53,11 +53,11 @@ double Polygon::width() const {
 
 Rectangle::Rectangle(double width, double height) : _width_(width), _height_(height) {}
 
-double Rectangle::height() const {
+double Rectangle::getHeight() const {
 	return _height_;
 }
 
-double Rectangle::width() const {
+double Rectangle::getWidth() const {
 	return _width_;
 }
 

@@ -6,7 +6,7 @@ TEST_CASE("Test heigth and width function()") {
 		{
 			INFO("Circle height");
 			Circle cir(4.0);
-			REQUIRE(cir.height() == 8.0);
+			REQUIRE(cir.getHeight() == 8.0);
 		}
 	}
 }
