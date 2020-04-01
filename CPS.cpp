@@ -4,8 +4,11 @@
 #include<math.h>
 using std::cos;
 using std::sin;
-
+using std::round;
 using std::make_shared;
+
+#include<string>
+using std::string;
 
 // Circle
 
@@ -20,7 +23,7 @@ double Circle::getWidth() const{
 }
 
 void Circle::generatePostScript(std::ostream& os) const {
-
+	os << ("Hellow");
 }
 
 // Polygon
@@ -36,7 +39,7 @@ double Polygon::getHeight() const {
 	else {
 		height = (_sideLength_ * (1 + cos(3.14 / _numSides_))) / (2 * sin(3.14 / _numSides_));
 	}
-	return height;
+	return round(height);
 }
 
 double Polygon::getWidth() const {
@@ -51,7 +54,7 @@ double Polygon::getWidth() const {
 	else {
 		width = (_sideLength_ * sin(3.14 * (_numSides_ - 1.0) / 2 * _numSides_)) / (sin(3.14 / _numSides_));
 	}
-	return width;
+	return round(width);
 }
 
 void Polygon::generatePostScript(std::ostream& os) const {
@@ -111,4 +114,21 @@ std::shared_ptr<Shape> makeSquare(double length) {
 
 std::shared_ptr<Shape> makeTriangle(double length) {
 	return make_shared<Triangle>(length);
+}
+
+std::shared_ptr<Shape> makeRotatedShape(std::shared_ptr<Shape> s, Angle a) {     // dummy shape
+	return make_shared<Triangle>(1.0);
+}
+std::shared_ptr<Shape> makeScaledShape(std::shared_ptr<Shape> s, double sx, double sy) {
+	return make_shared<Triangle>(1.0);
+
+}
+std::shared_ptr<Shape> makeLayeredShape(std::initializer_list<Shape> i) {
+	return make_shared<Triangle>(1.0);
+}
+std::shared_ptr<Shape> makeVerticalShape(std::initializer_list<Shape> i) {
+	return make_shared<Triangle>(1.0);
+}
+std::shared_ptr<Shape> makeHorizontalShape(std::initializer_list<Shape> i) {
+	return make_shared<Triangle>(1.0);
 }

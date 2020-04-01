@@ -9,6 +9,7 @@ TEST_CASE("Test height and width function()") {
 			auto cir = makeCircle(4.0);
 			REQUIRE(cir->getHeight() == 8.0);
 		}
+
         {
             INFO("Circle width");
 			auto cir = makeCircle(4.0);
@@ -20,12 +21,13 @@ TEST_CASE("Test height and width function()") {
         {
             INFO("Polygon height");
             auto pol = makePolygon(5,5.0);
-            REQUIRE(pol->getHeight() ==  );
+            REQUIRE(pol->getHeight() == 7.7 ); // 7.694..
         }
+
         {
             INFO("Polygon width");
             auto pol = makePolygon(5,5.0);
-            REQUIRE(pol->getWidth() ==  );   
+            REQUIRE(pol->getWidth() == 8.1 ); //8.0901...
         }
     }
     SECTION("Rectangle height and width") {
@@ -34,6 +36,7 @@ TEST_CASE("Test height and width function()") {
             auto rec = makeRectangle(5.0,3.0);
             REQUIRE(rec->getHeight() == 3.0 );
         }
+
         {
             INFO("Rectangle width");
             auto rec = makeRectangle(5.0,3.0);
@@ -46,8 +49,9 @@ TEST_CASE("Test height and width function()") {
             auto spac = makeSpacer(6.0,4.0);
             REQUIRE(spac-> getHeight() == 4.0);
         }
+
         {
-            INFO("Spacer width");4
+            INFO("Spacer width");
             auto spac = makeSpacer(6.0,4.0);
             REQUIRE(spac-> getWidth() == 6.0);
         }
@@ -58,9 +62,10 @@ TEST_CASE("Test height and width function()") {
             auto spac = makeSquare(2.0);
             REQUIRE(spac-> getHeight() == 2.0 );
         }
+
         {
             INFO("Spacer width");
-            auto spac = makeSpacer(2.0); 
+            auto spac = makeSpacer(2.0,2.0); 
             REQUIRE(spac-> getWidth() == 2.0 );
         }
     }
@@ -70,12 +75,13 @@ TEST_CASE("Test height and width function()") {
         {
             INFO("Triangle height");
             auto spac = makeTriangle(4.0); 
-            REQUIRE(spac-> getHeight() == );
+            REQUIRE(spac-> getHeight() == 3.46); //3.464...
         }
+
         {
             INFO("Triangle width");
             auto spac = makeTriangle(4.0); 
-            REQUIRE(spac-> getWidth() == );
+            REQUIRE(spac-> getWidth() == 4.0 ); //4.0
         }
     }
 }
