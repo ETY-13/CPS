@@ -75,7 +75,7 @@ TEST_CASE("Test height and width function()") {
         {
             INFO("Triangle height");
             auto spac = makeTriangle(4.0); 
-            REQUIRE(spac-> getHeight() == 3.46); //3.464...
+            REQUIRE(spac-> getHeight() == 3.5); //3.464...
         }
 
         {

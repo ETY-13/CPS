@@ -4,7 +4,7 @@
 #include<math.h>
 using std::cos;
 using std::sin;
-using std::round;
+using std::floor;
 using std::make_shared;
 
 #include<string>
@@ -39,7 +39,7 @@ double Polygon::getHeight() const {
 	else {
 		height = (_sideLength_ * (1 + cos(3.14 / _numSides_))) / (2 * sin(3.14 / _numSides_));
 	}
-	return round(height);
+	return floor(height * 10.0 + 0.5)/10.0;
 }
 
 double Polygon::getWidth() const {
@@ -48,13 +48,13 @@ double Polygon::getWidth() const {
 	if (_numSides_ % 4 == 0) {
 		width = (_sideLength_ * cos(3.14 / _numSides_)) / sin(3.14 / _numSides_);
 	}
-	else if(_numSides_ % 2 ==0) {
+	else if(_numSides_ % 2 == 0) {
 		width = _sideLength_ / sin(3.14 / _numSides_);
 	}
 	else {
-		width = (_sideLength_ * sin(3.14 * (_numSides_ - 1.0) / 2 * _numSides_)) / (sin(3.14 / _numSides_));
+		width = (_sideLength_ * sin(3.14 * (_numSides_ - 1.0) / (2.0 * _numSides_))) / sin(3.14 / _numSides_);
 	}
-	return round(width);
+	return floor(width * 10.0 + 0.5) / 10.0;
 }
 
 void Polygon::generatePostScript(std::ostream& os) const {
