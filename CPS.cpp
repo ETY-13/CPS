@@ -106,6 +106,9 @@ RotatedShape::RotatedShape(std::shared_ptr<Shape> s, Angle a) {
 		_height_ = s->getWidth();
 		_width_ = s->getHeight();
 		break;
+	default:
+		_height_ = 0.0;
+		_width_ = 0.0;
 	}
 }
 double RotatedShape::getHeight() const {
@@ -118,7 +121,7 @@ void RotatedShape::generatePostScript(std::ostream& os) const {}
 
 // ScaledShape
 
-ScaledShape::ScaledShape(std::shared_ptr<Shape> s, double sx, double sy):_width_(s->getWidth() * sy), _height_(s->getHeight() *sx) {}
+ScaledShape::ScaledShape(std::shared_ptr<Shape> s, double sx, double sy):_width_(s->getWidth() * sx), _height_(s->getHeight() *sy) {}
 double ScaledShape::getHeight() const{
 	return _height_;
 }
@@ -203,7 +206,20 @@ double HorizontalShape::getWidth() const {
 }
 void HorizontalShape::generatePostScript(std::ostream& os) const  {}
 
-// 
+
+// Custome niceShape
+
+niceShape::niceShape(){}
+double niceShape::getHeight()const {
+	return 0.0;
+}
+
+double niceShape::getWidth() const {
+	return 0.0;
+}
+
+void niceShape::generatePostScript(std::ostream& os) const {}
+
 // Utility functions
 
 std::shared_ptr<Shape> makeCircle(double radius) {
@@ -230,19 +246,22 @@ std::shared_ptr<Shape> makeTriangle(double length) {
 	return make_shared<Triangle>(length);
 }
 
-std::shared_ptr<Shape> makeRotatedShape(std::shared_ptr<Shape> s, Angle a) {     // dummy shape
-	return make_shared<Triangle>(1.0);
+std::shared_ptr<Shape> makeRotatedShape(std::shared_ptr<Shape> s, Angle a) { 
+	return make_shared<RotatedShape>(s,a);
 }
-std::shared_ptr<Shape> makeScaledShape(std::shared_ptr<Shape> s, double sx, double sy) {
-	return make_shared<Triangle>(1.0);
 
+std::shared_ptr<Shape> makeScaledShape(std::shared_ptr<Shape> s, double sx, double sy) {
+	return make_shared<ScaledShape>(s,sx,sy);
 }
+
 std::shared_ptr<Shape> makeLayeredShape(std::initializer_list<std::shared_ptr<Shape>> i) {
-	return make_shared<Triangle>(1.0);
+	return make_shared<LayeredShape>(i);
 }
+
 std::shared_ptr<Shape> makeVerticalShape(std::initializer_list<std::shared_ptr<Shape>> i) {
-	return make_shared<Triangle>(1.0);
+	return make_shared<VerticalShape>(i);
 }
+
 std::shared_ptr<Shape> makeHorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i) {
-	return make_shared<Triangle>(1.0);
+	return make_shared<HorizontalShape>(i);
 }

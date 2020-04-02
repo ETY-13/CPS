@@ -70,7 +70,6 @@ TEST_CASE("Test height and width function()") {
         }
     }
 
-    //NOT COMPLETED
      SECTION("Triangle height and width"){ 
         {
             INFO("Triangle height");
@@ -83,5 +82,54 @@ TEST_CASE("Test height and width function()") {
             auto spac = makeTriangle(4.0); 
             REQUIRE(spac-> getWidth() == 4.0 ); //4.0
         }
-    }
+     }
+
+     SECTION("RotatedShape height and width") {
+         {
+             auto rectangle = makeRectangle(5.0, 4.0);
+             auto rotShape = makeRotatedShape(rectangle, Angle::R90);
+             INFO("Rotated Shape height");
+             REQUIRE(rotShape->getHeight() == 5.0);
+             INFO("Rotated Shape width");
+             REQUIRE(rotShape->getWidth() == 4.0);
+         }
+     }
+
+     SECTION("ScaledShape height and width") {
+         {
+             auto circle = makeCircle(6.0);
+             auto scaledCircle = makeScaledShape(circle, 0.5, 0.5);
+             INFO("Scaled Shape height");
+             REQUIRE(scaledCircle->getHeight() == 6.0);
+             INFO("Scaled Shape height");
+             REQUIRE(scaledCircle->getWidth() == 6.0);
+         }
+     }
+
+     SECTION("Vertical Shape height and width") {
+         {
+             auto circle = makeCircle(3.0);
+             auto rectangle = makeRectangle(7.0, 7.0);
+             auto square = makeSquare(8.0);
+             auto vertical = makeVerticalShape({ circle, rectangle, square });
+             INFO("Vertical Shape height");
+             REQUIRE(vertical->getHeight() == 21.0);
+             INFO("Vertical Shape width");
+             REQUIRE(vertical->getWidth() == 8.0);
+         }
+     }
+
+     SECTION("Horizontal Shape heigth and width") {
+         {
+             auto circle = makeCircle(3.0);
+             auto rectangle = makeRectangle(7.0, 7.0);
+             auto square = makeSquare(8.0);
+             auto horizontal = makeHorizontalShape({ circle, rectangle, square });
+
+             INFO("Horzontal Shape height");
+             REQUIRE(horizontal->getHeight() == 8.0);
+             INFO("Vertical Shape width");
+             REQUIRE(horizontal->getWidth() == 21.0);
+         }
+     }
 }
