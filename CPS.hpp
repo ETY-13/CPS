@@ -2,7 +2,8 @@
 #define CPS_HPP
 
 #include<ostream>
-
+#include<memory>
+enum class Angle { R90, R180, R270 };
 
 class Shape {
 public:
@@ -49,7 +50,7 @@ private:
 
 class Spacer: public Rectangle {
 public:
-	Spacer(double widht, double height);
+	Spacer(double width, double height);
 };
 
 class Square: public Polygon {
@@ -62,7 +63,72 @@ public:
 	Triangle(double sideLength);
 };
 
+class RotatedShape : public Shape {
+public: 
+	RotatedShape(std::shared_ptr<Shape> s, Angle a);
+	double getHeight() const override;
+	double getWidth() const override;
+	void generatePostScript(std::ostream& os) const override;
+private:
+	double _width_;
+	double _height_;
 
+};
+
+class ScaledShape : public Shape {
+public:
+	ScaledShape(std::shared_ptr<Shape> s, double sx, double sy);
+	double getHeight() const override;
+	double getWidth() const override;
+	void generatePostScript(std::ostream& os) const override;
+private:
+	double _width_;
+	double _height_;
+};
+
+class LayeredShape : public Shape {
+public:
+	LayeredShape(std::initializer_list<std::shared_ptr<Shape>> i);
+	double getHeight() const override;
+	double getWidth() const override;
+	void generatePostScript(std::ostream& os) const override;
+private:
+	double _width_;
+	double _heigth_;
+};
+
+class VerticalShape : public Shape {
+public:
+	VerticalShape(std::initializer_list<std::shared_ptr<Shape>> i);
+	double getHeight() const override;
+	double getWidth() const override;
+	void generatePostScript(std::ostream& os) const override;
+private:
+	double _width_;
+	double _heigth_;
+};
+
+class HorizontalShape : public Shape {
+public:
+	HorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i);
+	double getHeight() const override;
+	double getWidth() const override;
+	void generatePostScript(std::ostream& os) const override;
+private:
+	double _width_;
+	double _heigth_;
+};
+
+class niceShape : public Shape {
+public:
+	niceShape();
+	double getHeight() const override;
+	double getWidth() const override;
+	void generatePostScript(std::ostream& os) const override;
+private:
+	double _width_;
+	double _heigth_;
+};
 // Utility functions for making each shape
 std::shared_ptr<Shape> makeCircle(double radius);
 std::shared_ptr<Shape> makePolygon(int numSides, double length);
@@ -70,11 +136,12 @@ std::shared_ptr<Shape> makeRectangle(double width, double height);
 std::shared_ptr<Shape> makeSpacer(double width, double height);
 std::shared_ptr<Shape> makeSquare(double length);
 std::shared_ptr<Shape> makeTriangle(double length);
-enum class Angle { R90, R180, R270 };
+
+
 std::shared_ptr<Shape> makeRotatedShape(std::shared_ptr<Shape> s, Angle a);
 std::shared_ptr<Shape> makeScaledShape(std::shared_ptr<Shape> s, double sx, double sy);
-std::shared_ptr<Shape> makeLayeredShape(std::initializer_list<Shape> i);
-std::shared_ptr<Shape> makeVerticalShape(std::initializer_list<Shape> i);
-std::shared_ptr<Shape> makeHorizontalShape(std::initializer_list<Shape> i);
+std::shared_ptr<Shape> makeLayeredShape(std::initializer_list<std::shared_ptr<Shape>> i);
+std::shared_ptr<Shape> makeVerticalShape(std::initializer_list<std::shared_ptr<Shape>> i);
+std::shared_ptr<Shape> makeHorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i);
 #endif // !CPS_HPP
 

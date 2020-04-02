@@ -23,7 +23,7 @@ double Circle::getWidth() const{
 }
 
 void Circle::generatePostScript(std::ostream& os) const {
-	os << ("Hellow");
+	
 }
 
 // Polygon
@@ -89,7 +89,121 @@ Square::Square(double sideLength): Polygon(4, sideLength) {}
 
 Triangle::Triangle(double sideLength): Polygon(3, sideLength) {}
 
+// Rotated Shape 
 
+RotatedShape::RotatedShape(std::shared_ptr<Shape> s, Angle a) {
+	switch (a)
+	{
+	case Angle::R90:
+		_height_ = s->getWidth();
+		_width_ = s->getHeight();
+		break;
+	case Angle::R180:
+		_height_ = s->getHeight();
+		_width_ = s->getWidth();
+		break;
+	case Angle::R270:
+		_height_ = s->getWidth();
+		_width_ = s->getHeight();
+		break;
+	}
+}
+double RotatedShape::getHeight() const {
+	return _height_;
+}
+double RotatedShape::getWidth() const {
+	return _width_;
+}
+void RotatedShape::generatePostScript(std::ostream& os) const {}
+
+// ScaledShape
+
+ScaledShape::ScaledShape(std::shared_ptr<Shape> s, double sx, double sy):_width_(s->getWidth() * sy), _height_(s->getHeight() *sx) {}
+double ScaledShape::getHeight() const{
+	return _height_;
+}
+double ScaledShape::getWidth() const{
+	return _width_;
+}
+void ScaledShape::generatePostScript(std::ostream& os) const {}
+
+// LayeredShape
+
+LayeredShape::LayeredShape(std::initializer_list<std::shared_ptr<Shape>> i) {
+	double height = 0.0;
+	double width = 0.0;
+	for (auto shape : i) {
+		if (shape->getHeight() > height) {
+			height = shape->getHeight();
+		}
+
+		if (shape->getWidth() > width) {
+			width = shape->getWidth();
+		}
+	}
+	
+	_heigth_ = height;
+	_width_ = width;
+}
+double LayeredShape::getHeight() const {
+	return _heigth_;
+}
+double LayeredShape::getWidth() const {
+	return _width_;
+}
+void LayeredShape::generatePostScript(std::ostream& os) const {}
+
+// VerticalShape
+
+VerticalShape::VerticalShape(std::initializer_list<std::shared_ptr<Shape>> i) {
+	double height = 0.0;
+	double width = 0.0;
+	for (auto shape : i) {
+
+		if (shape->getWidth() > width) {
+			width = shape->getWidth();
+		}
+
+		height += shape->getHeight();
+	}
+
+	_heigth_ = height;
+	_width_ = width;
+}
+double VerticalShape::getHeight() const {
+	return _heigth_;
+}
+double VerticalShape::getWidth() const {
+	return _width_;
+}
+void VerticalShape::generatePostScript(std::ostream& os) const {}
+
+// HorizontalShape
+
+HorizontalShape::HorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i) {
+	double height = 0.0;
+	double width = 0.0;
+	for (auto shape : i) {
+
+		if (shape->getWidth() > height) {
+			height = shape->getHeight();
+		}
+
+		width += shape->getWidth();
+	}
+
+	_heigth_ = height;
+	_width_ = width;
+}
+double HorizontalShape::getHeight() const {
+	return _heigth_;
+}
+double HorizontalShape::getWidth() const {
+	return _width_;
+}
+void HorizontalShape::generatePostScript(std::ostream& os) const  {}
+
+// 
 // Utility functions
 
 std::shared_ptr<Shape> makeCircle(double radius) {
@@ -123,12 +237,12 @@ std::shared_ptr<Shape> makeScaledShape(std::shared_ptr<Shape> s, double sx, doub
 	return make_shared<Triangle>(1.0);
 
 }
-std::shared_ptr<Shape> makeLayeredShape(std::initializer_list<Shape> i) {
+std::shared_ptr<Shape> makeLayeredShape(std::initializer_list<std::shared_ptr<Shape>> i) {
 	return make_shared<Triangle>(1.0);
 }
-std::shared_ptr<Shape> makeVerticalShape(std::initializer_list<Shape> i) {
+std::shared_ptr<Shape> makeVerticalShape(std::initializer_list<std::shared_ptr<Shape>> i) {
 	return make_shared<Triangle>(1.0);
 }
-std::shared_ptr<Shape> makeHorizontalShape(std::initializer_list<Shape> i) {
+std::shared_ptr<Shape> makeHorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i) {
 	return make_shared<Triangle>(1.0);
 }
