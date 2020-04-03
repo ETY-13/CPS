@@ -24,9 +24,9 @@ double Circle::getWidth() const{
 
 void Circle::generatePostScript(std::ostream& os) const {
     os << "gsave\nnewpath\n0 0 translate\n";
-	os << "0 0 " << getHeight()/2 <<" 0 360 arc"
+	os << "0 0 " << _radius_ <<" 0 360 arc"
 	os << " closepath\nstroke\n";
-	os << "grestore\n"
+	os << "grestore\n\n"
 }
 
 // Polygon
@@ -77,10 +77,10 @@ double Rectangle::getWidth() const {
 }
 
 void Rectangle::generatePostScript(std::ostream& os) const {
-    os << "gsave\nnewpath\n0 0 translate\n0 " << getHeight() << " moveto\n";
-    os << getWidth() << " " << getHeight() << " rlineto\n" << getWidth() << " 0 rlineto\n0 0 rlineto\n";
+    os << "gsave\nnewpath\n0 0 translate\n0 " << _height_ << " moveto\n";
+    os << _width_ << " " << _height_ << " rlineto\n" << _width_ << " 0 rlineto\n0 0 rlineto\n";
     os << " closepath\nstroke\n";
-	os << "grestore\n";
+	os << "grestore\n\n";
 }
 
 // Spacer
@@ -124,7 +124,11 @@ double RotatedShape::getHeight() const {
 double RotatedShape::getWidth() const {
 	return _width_;
 }
-void RotatedShape::generatePostScript(std::ostream& os) const {}
+void RotatedShape::generatePostScript(std::ostream& os) const {
+    os << "gsave\n" << a << " rotate\n";
+	s->generatePostScript(os);
+	os << "grestore\n\n";
+}
 
 // ScaledShape
 
