@@ -169,7 +169,13 @@ double LayeredShape::getHeight() const {
 double LayeredShape::getWidth() const {
 	return _width_;
 }
-void LayeredShape::generatePostScript(std::ostream& os) const {}
+void LayeredShape::generatePostScript(std::ostream& os) const {
+    os << " gsave\n";
+	for (const auto& shape : i){
+		shape->generatePostScript(os);
+	}
+	os << " grestore\n";
+}
 
 // VerticalShape
 
@@ -194,7 +200,11 @@ double VerticalShape::getHeight() const {
 double VerticalShape::getWidth() const {
 	return _width_;
 }
-void VerticalShape::generatePostScript(std::ostream& os) const {}
+void VerticalShape::generatePostScript(std::ostream& os) const {
+    os <<
+
+
+}
 
 // HorizontalShape
 
