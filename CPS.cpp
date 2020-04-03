@@ -209,13 +209,13 @@ void HorizontalShape::generatePostScript(std::ostream& os) const  {}
 
 // Custome niceShape
 
-niceShape::niceShape(){}
+niceShape::niceShape():_width_(0.0),_heigth_(0.0){}
 double niceShape::getHeight()const {
-	return 0.0;
+	return _heigth_;
 }
 
 double niceShape::getWidth() const {
-	return 0.0;
+	return _width_;
 }
 
 void niceShape::generatePostScript(std::ostream& os) const {}
