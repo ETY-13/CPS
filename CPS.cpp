@@ -139,7 +139,11 @@ double ScaledShape::getHeight() const{
 double ScaledShape::getWidth() const{
 	return _width_;
 }
-void ScaledShape::generatePostScript(std::ostream& os) const {}
+void ScaledShape::generatePostScript(std::ostream& os) const {
+    os << "gsave\n" << sx <<" " << sy << " scale\n";
+	s->generatePostScript(os);
+	os << "grestore\n\n";
+}
 
 // LayeredShape
 
