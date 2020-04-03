@@ -127,7 +127,7 @@ private:
 
 class arcOfShapes : public Shape {
 public:
-	arcOfShapes(std::initializer_list<std::shared_ptr<Shape>> i, Angle a);
+	arcOfShapes(std::initializer_list<std::shared_ptr<Shape>> i, Angle a, double radius);
 	double getHeight() const override;
 	double getWidth() const override;
 	void generatePostScript(std::ostream& os) const override;
@@ -135,6 +135,8 @@ private:
     std::vector<std::shared_ptr<Shape>> _shape_;
 	double _width_;
 	double _heigth_;
+	int _degrees_;
+	double _radius_;
 };
 // Utility functions for making each shape
 std::shared_ptr<Shape> makeCircle(double radius);
