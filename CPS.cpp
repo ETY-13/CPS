@@ -170,11 +170,11 @@ double LayeredShape::getWidth() const {
 	return _width_;
 }
 void LayeredShape::generatePostScript(std::ostream& os) const {
-    os << " gsave\n";
+    os << "gsave\n";
 	for (const auto& shape : i){
 		shape->generatePostScript(os);
 	}
-	os << " grestore\n";
+	os << "grestore\n\n";
 }
 
 // VerticalShape
@@ -201,8 +201,17 @@ double VerticalShape::getWidth() const {
 	return _width_;
 }
 void VerticalShape::generatePostScript(std::ostream& os) const {
-    os <<
+    os << "gsave\n";
 
+    vector<double> allheights;
+
+    for (const auto shape : i){
+        allheights.pushback(shape->getHeight());
+    }
+    for (const auto& shape : i){
+        //not finished
+    }
+    os << "gsave\n";
 
 }
 
@@ -232,7 +241,7 @@ double HorizontalShape::getWidth() const {
 void HorizontalShape::generatePostScript(std::ostream& os) const  {}
 
 
-// Custome niceShape
+// Custom niceShape
 
 niceShape::niceShape(){}
 double niceShape::getHeight()const {
