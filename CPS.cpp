@@ -24,9 +24,9 @@ double Circle::getWidth() const{
 
 void Circle::generatePostScript(std::ostream& os) const {
     os << "gsave\nnewpath\n0 0 translate\n";
-	os << "0 0 " << _radius_ <<" 0 360 arc"
+	os << "0 0 " << getHeight()/2 <<" 0 360 arc";
 	os << " closepath\nstroke\n";
-	os << "grestore\n\n"
+	os << "grestore\n\n";
 }
 
 // Polygon
@@ -77,8 +77,8 @@ double Rectangle::getWidth() const {
 }
 
 void Rectangle::generatePostScript(std::ostream& os) const {
-    os << "gsave\nnewpath\n0 0 translate\n0 " << _height_ << " moveto\n";
-    os << _width_ << " " << _height_ << " rlineto\n" << _width_ << " 0 rlineto\n0 0 rlineto\n";
+    os << "gsave\nnewpath\n0 0 translate\n0 " << getHeight() << " moveto\n";
+    os << getWidth() << " " << getHeight() << " rlineto\n" << getWidth() << " 0 rlineto\n0 0 rlineto\n";
     os << " closepath\nstroke\n";
 	os << "grestore\n\n";
 }
@@ -98,7 +98,7 @@ Triangle::Triangle(double sideLength): Polygon(3, sideLength) {
 
 // Rotated Shape
 
-RotatedShape::RotatedShape(std::shared_ptr<Shape> s, Angle a) {
+RotatedShape::RotatedShape(std::shared_ptr<Shape> s, Angle a):_s_(s) {
 	switch (a)
 	{
 	case Angle::R90:
@@ -125,14 +125,14 @@ double RotatedShape::getWidth() const {
 	return _width_;
 }
 void RotatedShape::generatePostScript(std::ostream& os) const {
-    os << "gsave\n" << a << " rotate\n";
-	s->generatePostScript(os);
+    os << "gsave\n";
+	_s_->generatePostScript(os);
 	os << "grestore\n\n";
 }
 
 // ScaledShape
 
-ScaledShape::ScaledShape(std::shared_ptr<Shape> s, double sx, double sy):_width_(s->getWidth() * sx), _height_(s->getHeight() *sy) {}
+ScaledShape::ScaledShape(std::shared_ptr<Shape> s, double sx, double sy):_width_(s->getWidth() * sx), _height_(s->getHeight() *sy), _s_(s) {}
 double ScaledShape::getHeight() const{
 	return _height_;
 }
@@ -140,8 +140,8 @@ double ScaledShape::getWidth() const{
 	return _width_;
 }
 void ScaledShape::generatePostScript(std::ostream& os) const {
-    os << "gsave\n" << sx <<" " << sy << " scale\n";
-	s->generatePostScript(os);
+    os << "gsave\n";
+	_s_->generatePostScript(os);
 	os << "grestore\n\n";
 }
 
@@ -160,18 +160,19 @@ LayeredShape::LayeredShape(std::initializer_list<std::shared_ptr<Shape>> i) {
 		}
 	}
 
-	_heigth_ = height;
+	_height_ = height;
 	_width_ = width;
+	std::vector<std::shared_ptr<Shape>> _shape_ = i;
 }
 double LayeredShape::getHeight() const {
-	return _heigth_;
+	return _height_;
 }
 double LayeredShape::getWidth() const {
 	return _width_;
 }
 void LayeredShape::generatePostScript(std::ostream& os) const {
     os << "gsave\n";
-	for (const auto& shape : i){
+	for (const auto& shape : _shape_){
 		shape->generatePostScript(os);
 	}
 	os << "grestore\n\n";
@@ -191,22 +192,23 @@ VerticalShape::VerticalShape(std::initializer_list<std::shared_ptr<Shape>> i) {
 		height += shape->getHeight();
 	}
 
-	_heigth_ = height;
+	_height_ = height;
 	_width_ = width;
 }
 double VerticalShape::getHeight() const {
-	return _heigth_;
+	return _height_;
 }
 double VerticalShape::getWidth() const {
 	return _width_;
 }
 void VerticalShape::generatePostScript(std::ostream& os) const {
     os << "gsave\n";
-    for (const auto& shape : i){    //NOT FINISHED
-        os << " 0 " << (shape->height)/ 2.0 << " translate\n";
+    for (const auto& shape : _shape_){
+        os << " 0 " << (shape->getHeight())/ 2.0 << " translate\n";  //FIX THIS
 		shape->generatePostScript(os);
+		os << " 0 " << (shape->getHeight())/ 2.0 << " translate\n"; //FIX THIS
     }
-    os << "gsave\n";
+    os << "grestore\n\n";
 
 }
 
@@ -236,18 +238,18 @@ double HorizontalShape::getWidth() const {
 void HorizontalShape::generatePostScript(std::ostream& os) const  {}
 
 
-// Custom niceShape
+// Custom arcOfShapes
 
-niceShape::niceShape(){}
-double niceShape::getHeight()const {
+arcOfShapes::arcOfShapes(std::initializer_list<std::shared_ptr<Shape>> i, Angle a){}
+double arcOfShapes::getHeight()const {
 	return 0.0;
 }
 
-double niceShape::getWidth() const {
+double arcOfShapes::getWidth() const {
 	return 0.0;
 }
 
-void niceShape::generatePostScript(std::ostream& os) const {}
+void arcOfShapes::generatePostScript(std::ostream& os) const {}
 
 // Utility functions
 

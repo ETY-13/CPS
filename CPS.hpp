@@ -3,6 +3,7 @@
 
 #include<ostream>
 #include<memory>
+#include <vector>
 enum class Angle { R90, R180, R270 };
 
 class Shape {
@@ -64,12 +65,13 @@ public:
 };
 
 class RotatedShape : public Shape {
-public: 
+public:
 	RotatedShape(std::shared_ptr<Shape> s, Angle a);
 	double getHeight() const override;
 	double getWidth() const override;
 	void generatePostScript(std::ostream& os) const override;
 private:
+    std::shared_ptr<Shape> _s_;
 	double _width_;
 	double _height_;
 
@@ -82,6 +84,7 @@ public:
 	double getWidth() const override;
 	void generatePostScript(std::ostream& os) const override;
 private:
+    std::shared_ptr<Shape> _s_;
 	double _width_;
 	double _height_;
 };
@@ -93,8 +96,9 @@ public:
 	double getWidth() const override;
 	void generatePostScript(std::ostream& os) const override;
 private:
+    std::vector<std::shared_ptr<Shape>> _shape_;
 	double _width_;
-	double _heigth_;
+	double _height_;
 };
 
 class VerticalShape : public Shape {
@@ -104,8 +108,9 @@ public:
 	double getWidth() const override;
 	void generatePostScript(std::ostream& os) const override;
 private:
+    std::vector<std::shared_ptr<Shape>> _shape_;
 	double _width_;
-	double _heigth_;
+	double _height_;
 };
 
 class HorizontalShape : public Shape {
@@ -115,17 +120,19 @@ public:
 	double getWidth() const override;
 	void generatePostScript(std::ostream& os) const override;
 private:
+    std::vector<std::shared_ptr<Shape>> _shape_;
 	double _width_;
 	double _heigth_;
 };
 
-class niceShape : public Shape {
+class arcOfShapes : public Shape {
 public:
-	niceShape();
+	arcOfShapes(std::initializer_list<std::shared_ptr<Shape>> i, Angle a);
 	double getHeight() const override;
 	double getWidth() const override;
 	void generatePostScript(std::ostream& os) const override;
 private:
+    std::vector<std::shared_ptr<Shape>> _shape_;
 	double _width_;
 	double _heigth_;
 };
