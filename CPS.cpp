@@ -24,9 +24,9 @@ double Circle::getWidth() const{
 
 void Circle::generatePostScript(std::ostream& os) const {
     os << "gsave\nnewpath\n0 0 translate\n";
-	os << "0 0 " << _radius_ <<" 0 360 arc"
+	os << "0 0 " << _radius_ << " 0 360 arc";
 	os << " closepath\nstroke\n";
-	os << "grestore\n\n"
+	os << "grestore\n\n";
 }
 
 // Polygon
