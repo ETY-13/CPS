@@ -202,14 +202,9 @@ double VerticalShape::getWidth() const {
 }
 void VerticalShape::generatePostScript(std::ostream& os) const {
     os << "gsave\n";
-
-    vector<double> allheights;
-
-    for (const auto shape : i){
-        allheights.pushback(shape->getHeight());
-    }
-    for (const auto& shape : i){
-        //not finished
+    for (const auto& shape : i){    //NOT FINISHED
+        os << " 0 " << (shape->height)/ 2.0 << " translate\n";
+		shape->generatePostScript(os);
     }
     os << "gsave\n";
 
