@@ -24,8 +24,8 @@ double Circle::getWidth() const{
 
 void Circle::generatePostScript(std::ostream& os) const {
     os << "gsave\nnewpath\n0 0 translate\n";
-	os << "0 0 " << getHeight()/2 <<" 0 360 arc";
-	os << " closepath\nstroke\n";
+	os << "0 0 " << getHeight()/2 <<" 0 360 arc\n";
+	os << "closepath\nstroke\n";
 	os << "grestore\n\n";
 }
 
@@ -61,7 +61,16 @@ double Polygon::getWidth() const {
 }
 
 void Polygon::generatePostScript(std::ostream& os) const {
+    double degrees = (double)((180 * (_numSides_ - 2)) / _numSides_);
 
+    os << "gsave\nnewpath\n";
+	os << " -" << getHeight() / 2 << _sideLength_ / 2 << " translate movepath 0 0 moveto ";
+	for (auto i = 0; i < (_numSides_ - 1); i++){
+		os << degrees << " rotate\n";
+		os << _sideLength_ << " 0 rlineto\n";
+	}
+	os << "closepath\nstroke\n";
+	os << "grestore\n\n";
 }
 
 // Rectangle
@@ -91,7 +100,7 @@ Spacer::Spacer(double width, double height): Rectangle(width, height) {}
 
 Square::Square(double sideLength): Polygon(4, sideLength) {}
 
-// Traingle
+// Triangle
 
 Triangle::Triangle(double sideLength): Polygon(3, sideLength) {
 }
@@ -203,10 +212,11 @@ double VerticalShape::getWidth() const {
 }
 void VerticalShape::generatePostScript(std::ostream& os) const {
     os << "gsave\n";
+    os << getWidth()/ 2.0 << " 0 translate\n";
     for (const auto& shape : _shape_){
-        os << " 0 " << (shape->getHeight())/ 2.0 << " translate\n";  //FIX THIS
+        os << "0 " << (shape->getHeight())/ 2.0 << " translate\n";  //Check this
 		shape->generatePostScript(os);
-		os << " 0 " << (shape->getHeight())/ 2.0 << " translate\n"; //FIX THIS
+		os << "0 " << (shape->getHeight())/ 2.0 << " translate\n"; //Check this
     }
     os << "grestore\n\n";
 
@@ -219,7 +229,7 @@ HorizontalShape::HorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i
 	double width = 0.0;
 	for (auto shape : i) {
 
-		if (shape->getWidth() > height) {
+		if (shape->getHeight() > height) {
 			height = shape->getHeight();
 		}
 
@@ -235,7 +245,16 @@ double HorizontalShape::getHeight() const {
 double HorizontalShape::getWidth() const {
 	return _width_;
 }
-void HorizontalShape::generatePostScript(std::ostream& os) const  {}
+void HorizontalShape::generatePostScript(std::ostream& os) const  {
+    os << "gsave\n";
+    os << "0 " << getHeight()/ 2.0 << " translate\n";
+    for (const auto& shape : _shape_){
+        os << (shape->getWidth())/ 2.0 << " 0 translate\n";  //Check this
+		shape->generatePostScript(os);
+		os << (shape->getWidth())/ 2.0 << " 0 translate\n"; //Check this
+    }
+    os << "grestore\n\n";
+}
 
 
 // Custom arcOfShapes
@@ -249,7 +268,10 @@ double arcOfShapes::getWidth() const {
 	return 0.0;
 }
 
-void arcOfShapes::generatePostScript(std::ostream& os) const {}
+void arcOfShapes::generatePostScript(std::ostream& os) const {
+//supposed to take the first three shapes and put them in arc
+//either from 0 to 90, 0 to 180 or 0 to 360 depending on given angle
+}
 
 // Utility functions
 
