@@ -23,7 +23,10 @@ double Circle::getWidth() const{
 }
 
 void Circle::generatePostScript(std::ostream& os) const {
-	
+    os << "gsave\nnewpath\n0 0 translate\n";
+	os << "0 0 " << getHeight()/2 <<" 0 360 arc"
+	os << " closepath\nstroke\n";
+	os << "grestore\n"
 }
 
 // Polygon
@@ -74,7 +77,10 @@ double Rectangle::getWidth() const {
 }
 
 void Rectangle::generatePostScript(std::ostream& os) const {
-
+    os << "gsave\nnewpath\n0 0 translate\n0 " << getHeight() << " moveto\n";
+    os << getWidth() << " " << getHeight() << " rlineto\n" << getWidth() << " 0 rlineto\n0 0 rlineto\n";
+    os << " closepath\nstroke\n";
+	os << "grestore\n";
 }
 
 // Spacer
@@ -87,9 +93,10 @@ Square::Square(double sideLength): Polygon(4, sideLength) {}
 
 // Traingle
 
-Triangle::Triangle(double sideLength): Polygon(3, sideLength) {}
+Triangle::Triangle(double sideLength): Polygon(3, sideLength) {
+}
 
-// Rotated Shape 
+// Rotated Shape
 
 RotatedShape::RotatedShape(std::shared_ptr<Shape> s, Angle a) {
 	switch (a)
@@ -144,7 +151,7 @@ LayeredShape::LayeredShape(std::initializer_list<std::shared_ptr<Shape>> i) {
 			width = shape->getWidth();
 		}
 	}
-	
+
 	_heigth_ = height;
 	_width_ = width;
 }
@@ -246,7 +253,7 @@ std::shared_ptr<Shape> makeTriangle(double length) {
 	return make_shared<Triangle>(length);
 }
 
-std::shared_ptr<Shape> makeRotatedShape(std::shared_ptr<Shape> s, Angle a) { 
+std::shared_ptr<Shape> makeRotatedShape(std::shared_ptr<Shape> s, Angle a) {
 	return make_shared<RotatedShape>(s,a);
 }
 
