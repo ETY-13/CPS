@@ -179,7 +179,7 @@ void LayeredShape::generatePostScript(std::ostream& os) const {
 
 // VerticalShape
 
-VerticalShape::VerticalShape(std::initializer_list<std::shared_ptr<Shape>> i) {
+VerticalShape::VerticalShape(std::initializer_list<std::shared_ptr<Shape>> i): _shape_(i) {
 	double height = 0.0;
 	double width = 0.0;
 	for (auto shape : i) {
@@ -212,7 +212,7 @@ void VerticalShape::generatePostScript(std::ostream& os) const {
 
 // HorizontalShape
 
-HorizontalShape::HorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i) {
+HorizontalShape::HorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i): _shape_(i) {
 	double height = 0.0;
 	double width = 0.0;
 	for (auto shape : i) {
@@ -238,16 +238,53 @@ void HorizontalShape::generatePostScript(std::ostream& os) const  {}
 
 // Custom niceShape
 
-niceShape::niceShape():_width_(0.0),_heigth_(0.0){}
-double niceShape::getHeight()const {
-	return _heigth_;
+arcOfShapes::arcOfShapes(std::initializer_list<std::shared_ptr<Shape>> i, Angle a double radius):_shape_(i),_radius_(radius){
+    switch (a)
+	{
+	case Angle::R90:
+		_degrees_ = 90;
+		_width_ =
+		_height_=
+		break;
+	case Angle::R180:
+		_degrees_ = 180;
+		_width_ =
+		_height_=
+		break;
+		break;
+	case Angle::R270:
+		_degrees_ = 270;
+		_width_ =
+		_height_
+		break;
+	default:
+	    _degrees_ = 0;
+		_height_ = 0.0;
+		_width_ = 0.0;
+	}
+}
+double arcOfShapes::getHeight()const {
+	return _height_;
 }
 
-double niceShape::getWidth() const {
+double arcOfShapes::getWidth() const {
 	return _width_;
 }
 
-void niceShape::generatePostScript(std::ostream& os) const {}
+void arcOfShapes::generatePostScript(std::ostream& os) const {
+
+/*
+0 5 360 {              % Go from 0 to 360 degrees in 10 degree steps
+  gsave                 % Keep rotations temporary
+    300 300 moveto
+    rotate              % Rotate by degrees on stack from 'for'
+    72 0 box stroke
+  grestore              % Get back the unrotated state
+
+} for
+
+*/
+}
 
 // Utility functions
 
