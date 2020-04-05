@@ -134,7 +134,7 @@ public:
 private:
     std::vector<std::shared_ptr<Shape>> _shape_;
 	double _width_;
-	double _heigth_;
+	double _height_;
 	int _degrees_;
 	double _radius_;
 };

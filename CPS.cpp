@@ -1,4 +1,3 @@
-
 #include"CPS.hpp"
 
 #include<math.h>
@@ -12,26 +11,27 @@ using std::string;
 
 // Circle
 
-Circle::Circle(double radius):_radius_(radius) {}
+Circle::Circle(double radius) :_radius_(radius) {}
 
 double Circle::getHeight() const {
 	return _radius_ * 2;
 }
 
-double Circle::getWidth() const{
+double Circle::getWidth() const {
 	return getHeight();
 }
 
 void Circle::generatePostScript(std::ostream& os) const {
-    os << "gsave\nnewpath\n0 0 translate\n";
-	os << "0 0 " << _radius_ << " 0 360 arc";
-	os << " closepath\nstroke\n";
+	os << "gsave\nnewpath\n0 0 translate\n";
+	os << "0 0 " << getHeight() / 2 << " 0 360 arc\n";
+	os << "closepath\nstroke\n";
 	os << "grestore\n\n";
+	os << "showpage\n\n";
 }
 
 // Polygon
 
-Polygon::Polygon(int numSides, double sideLength):_numSides_(numSides),_sideLength_(sideLength) {}
+Polygon::Polygon(int numSides, double sideLength) :_numSides_(numSides), _sideLength_(sideLength) {}
 
 double Polygon::getHeight() const {
 	double height = 0.0;
@@ -42,7 +42,7 @@ double Polygon::getHeight() const {
 	else {
 		height = (_sideLength_ * (1 + cos(3.14 / _numSides_))) / (2 * sin(3.14 / _numSides_));
 	}
-	return floor(height * 10.0 + 0.5)/10.0;
+	return floor(height * 10.0 + 0.5) / 10.0;
 }
 
 double Polygon::getWidth() const {
@@ -51,7 +51,7 @@ double Polygon::getWidth() const {
 	if (_numSides_ % 4 == 0) {
 		width = (_sideLength_ * cos(3.14 / _numSides_)) / sin(3.14 / _numSides_);
 	}
-	else if(_numSides_ % 2 == 0) {
+	else if (_numSides_ % 2 == 0) {
 		width = _sideLength_ / sin(3.14 / _numSides_);
 	}
 	else {
@@ -61,7 +61,17 @@ double Polygon::getWidth() const {
 }
 
 void Polygon::generatePostScript(std::ostream& os) const {
+	double degrees = (double)((180 * (_numSides_ - 2)) / _numSides_);
 
+	os << "gsave\nnewpath\n";
+	os << " -" << getHeight() / 2 << _sideLength_ / 2 << " translate movepath 0 0 moveto ";
+	for (auto i = 0; i < (_numSides_ - 1); i++) {
+		os << degrees << " rotate\n";
+		os << _sideLength_ << " 0 rlineto\n";
+	}
+	os << "closepath\nstroke\n";
+	os << "grestore\n\n";
+	os << "showpage\n\n";
 }
 
 // Rectangle
@@ -77,28 +87,28 @@ double Rectangle::getWidth() const {
 }
 
 void Rectangle::generatePostScript(std::ostream& os) const {
-    os << "gsave\nnewpath\n0 0 translate\n0 " << _height_ << " moveto\n";
-    os << _width_ << " " << _height_ << " rlineto\n" << _width_ << " 0 rlineto\n0 0 rlineto\n";
-    os << " closepath\nstroke\n";
+	os << "gsave\nnewpath\n0 0 translate\n0 " << getHeight() << " moveto\n";
+	os << getWidth() << " " << getHeight() << " rlineto\n" << getWidth() << " 0 rlineto\n0 0 rlineto\n";
+	os << " closepath\nstroke\n";
 	os << "grestore\n\n";
 }
 
 // Spacer
 
-Spacer::Spacer(double width, double height): Rectangle(width, height) {}
+Spacer::Spacer(double width, double height) : Rectangle(width, height) {}
 
 // Square
 
-Square::Square(double sideLength): Polygon(4, sideLength) {}
+Square::Square(double sideLength) : Polygon(4, sideLength) {}
 
-// Traingle
+// Triangle
 
-Triangle::Triangle(double sideLength): Polygon(3, sideLength) {
+Triangle::Triangle(double sideLength) : Polygon(3, sideLength) {
 }
 
 // Rotated Shape
 
-RotatedShape::RotatedShape(std::shared_ptr<Shape> s, Angle a) {
+RotatedShape::RotatedShape(std::shared_ptr<Shape> s, Angle a) : _s_(s) {
 	switch (a)
 	{
 	case Angle::R90:
@@ -125,23 +135,23 @@ double RotatedShape::getWidth() const {
 	return _width_;
 }
 void RotatedShape::generatePostScript(std::ostream& os) const {
-    os << "gsave\n" << a << " rotate\n";
-	s->generatePostScript(os);
+	os << "gsave\n";
+	_s_->generatePostScript(os);
 	os << "grestore\n\n";
 }
 
 // ScaledShape
 
-ScaledShape::ScaledShape(std::shared_ptr<Shape> s, double sx, double sy):_width_(s->getWidth() * sx), _height_(s->getHeight() *sy) {}
-double ScaledShape::getHeight() const{
+ScaledShape::ScaledShape(std::shared_ptr<Shape> s, double sx, double sy) :_width_(s->getWidth()* sx), _height_(s->getHeight()* sy), _s_(s) {}
+double ScaledShape::getHeight() const {
 	return _height_;
 }
-double ScaledShape::getWidth() const{
+double ScaledShape::getWidth() const {
 	return _width_;
 }
 void ScaledShape::generatePostScript(std::ostream& os) const {
-    os << "gsave\n" << sx <<" " << sy << " scale\n";
-	s->generatePostScript(os);
+	os << "gsave\n";
+	_s_->generatePostScript(os);
 	os << "grestore\n\n";
 }
 
@@ -160,18 +170,19 @@ LayeredShape::LayeredShape(std::initializer_list<std::shared_ptr<Shape>> i) {
 		}
 	}
 
-	_heigth_ = height;
+	_height_ = height;
 	_width_ = width;
+	std::vector<std::shared_ptr<Shape>> _shape_ = i;
 }
 double LayeredShape::getHeight() const {
-	return _heigth_;
+	return _height_;
 }
 double LayeredShape::getWidth() const {
 	return _width_;
 }
 void LayeredShape::generatePostScript(std::ostream& os) const {
-    os << "gsave\n";
-	for (const auto& shape : i){
+	os << "gsave\n";
+	for (const auto& shape : _shape_) {
 		shape->generatePostScript(os);
 	}
 	os << "grestore\n\n";
@@ -179,7 +190,7 @@ void LayeredShape::generatePostScript(std::ostream& os) const {
 
 // VerticalShape
 
-VerticalShape::VerticalShape(std::initializer_list<std::shared_ptr<Shape>> i): _shape_(i) {
+VerticalShape::VerticalShape(std::initializer_list<std::shared_ptr<Shape>> i) : _shape_(i) {
 	double height = 0.0;
 	double width = 0.0;
 	for (auto shape : i) {
@@ -191,33 +202,35 @@ VerticalShape::VerticalShape(std::initializer_list<std::shared_ptr<Shape>> i): _
 		height += shape->getHeight();
 	}
 
-	_heigth_ = height;
+	_height_ = height;
 	_width_ = width;
 }
 double VerticalShape::getHeight() const {
-	return _heigth_;
+	return _height_;
 }
 double VerticalShape::getWidth() const {
 	return _width_;
 }
 void VerticalShape::generatePostScript(std::ostream& os) const {
-    os << "gsave\n";
-    for (const auto& shape : i){    //NOT FINISHED
-        os << " 0 " << (shape->height)/ 2.0 << " translate\n";
+	os << "gsave\n";
+	os << getWidth() / 2.0 << " 0 translate\n";
+	for (const auto& shape : _shape_) {
+		os << "0 " << (shape->getHeight()) / 2.0 << " translate\n";  //Check this
 		shape->generatePostScript(os);
-    }
-    os << "gsave\n";
+		os << "0 " << (shape->getHeight()) / 2.0 << " translate\n"; //Check this
+	}
+	os << "grestore\n\n";
 
 }
 
 // HorizontalShape
 
-HorizontalShape::HorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i): _shape_(i) {
+HorizontalShape::HorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i) : _shape_(i) {
 	double height = 0.0;
 	double width = 0.0;
 	for (auto shape : i) {
 
-		if (shape->getWidth() > height) {
+		if (shape->getHeight() > height) {
 			height = shape->getHeight();
 		}
 
@@ -233,34 +246,43 @@ double HorizontalShape::getHeight() const {
 double HorizontalShape::getWidth() const {
 	return _width_;
 }
-void HorizontalShape::generatePostScript(std::ostream& os) const  {}
+void HorizontalShape::generatePostScript(std::ostream& os) const {
+	os << "gsave\n";
+	os << "0 " << getHeight() / 2.0 << " translate\n";
+	for (const auto& shape : _shape_) {
+		os << (shape->getWidth()) / 2.0 << " 0 translate\n";  //Check this
+		shape->generatePostScript(os);
+		os << (shape->getWidth()) / 2.0 << " 0 translate\n"; //Check this
+	}
+	os << "grestore\n\n";
+}
 
 
-// Custom niceShape
+// Custom arcOfShapes
 
-arcOfShapes::arcOfShapes(std::initializer_list<std::shared_ptr<Shape>> i, Angle a double radius):_shape_(i),_radius_(radius){
-    switch (a)
+arcOfShapes::arcOfShapes(std::initializer_list<std::shared_ptr<Shape>> i, Angle a, double radius) :_shape_(i), _radius_(radius) {
+	auto dummy = 0.0;
+	switch (a)
 	{
 	case Angle::R90:
 		_degrees_ = 90;
-		_width_ =
-		_height_=
+		_width_ = dummy;
+		_height_ = dummy;
 		break;
 	case Angle::R180:
 		_degrees_ = 180;
-		_width_ =
-		_height_=
-		break;
+		_width_ = dummy;
+		_height_ = dummy;
 		break;
 	case Angle::R270:
 		_degrees_ = 270;
-		_width_ =
-		_height_
+		_width_ = dummy;
+		_height_ = dummy;
 		break;
 	default:
-	    _degrees_ = 0;
-		_height_ = 0.0;
-		_width_ = 0.0;
+		_degrees_ = 0;
+		_height_ = dummy;
+		_width_ = dummy;
 	}
 }
 double arcOfShapes::getHeight()const {
@@ -273,17 +295,15 @@ double arcOfShapes::getWidth() const {
 
 void arcOfShapes::generatePostScript(std::ostream& os) const {
 
-/*
-0 5 360 {              % Go from 0 to 360 degrees in 10 degree steps
-  gsave                 % Keep rotations temporary
-    300 300 moveto
-    rotate              % Rotate by degrees on stack from 'for'
-    72 0 box stroke
-  grestore              % Get back the unrotated state
-
-} for
-
-*/
+	/*
+	0 5 360 {              % Go from 0 to 360 degrees in 10 degree steps
+	  gsave                 % Keep rotations temporary
+		300 300 moveto
+		rotate              % Rotate by degrees on stack from 'for'
+		72 0 box stroke
+	  grestore              % Get back the unrotated state
+	} for
+	*/
 }
 
 // Utility functions
@@ -293,15 +313,15 @@ std::shared_ptr<Shape> makeCircle(double radius) {
 }
 
 std::shared_ptr<Shape> makePolygon(int numSides, double length) {
-	return make_shared<Polygon>(numSides,length);
+	return make_shared<Polygon>(numSides, length);
 }
 
 std::shared_ptr<Shape> makeRectangle(double width, double height) {
-	return make_shared<Rectangle>(width,height);
+	return make_shared<Rectangle>(width, height);
 }
 
 std::shared_ptr<Shape> makeSpacer(double width, double height) {
-	return make_shared<Spacer>(width,height);
+	return make_shared<Spacer>(width, height);
 }
 
 std::shared_ptr<Shape> makeSquare(double length) {
@@ -313,11 +333,11 @@ std::shared_ptr<Shape> makeTriangle(double length) {
 }
 
 std::shared_ptr<Shape> makeRotatedShape(std::shared_ptr<Shape> s, Angle a) {
-	return make_shared<RotatedShape>(s,a);
+	return make_shared<RotatedShape>(s, a);
 }
 
 std::shared_ptr<Shape> makeScaledShape(std::shared_ptr<Shape> s, double sx, double sy) {
-	return make_shared<ScaledShape>(s,sx,sy);
+	return make_shared<ScaledShape>(s, sx, sy);
 }
 
 std::shared_ptr<Shape> makeLayeredShape(std::initializer_list<std::shared_ptr<Shape>> i) {
