@@ -23,11 +23,14 @@ void getShapetoFile() {
 
     ostream os(&outfile);
     auto cirlce = makeCircle(4);
-    auto poly = makePolygon(6, 10);
+    auto poly = makePolygon(8, 10);
+    auto rect = makeRectangle(20, 20);
     os << "% circle\n";
     cirlce->generatePostScript(os);
     os << "% polygon\n";
     poly->generatePostScript(os);
+    os << "%rectangle\n";
+    rect->generatePostScript(os);
     outfile.close();
 
 }
@@ -42,7 +45,6 @@ int main(int argc, char* argv[]) {
     if (result !=0){
         return result;
     }
-    
     
     result = session.run();
    

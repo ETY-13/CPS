@@ -22,7 +22,7 @@ double Circle::getWidth() const {
 }
 
 void Circle::generatePostScript(std::ostream& os) const {
-	os << "gsave\nnewpath\n0 0 translate\n";
+	os << "gsave\nnewpath\n288 396 translate\n";
 	os << "0 0 " << getHeight() / 2 << " 0 360 arc\n";
 	os << "closepath\nstroke\n";
 	os << "grestore\n\n";
@@ -61,12 +61,10 @@ double Polygon::getWidth() const {
 }
 
 void Polygon::generatePostScript(std::ostream& os) const {
-	double degrees = (double)((180 * (_numSides_ - 2)) / _numSides_);
-
 	os << "gsave\nnewpath\n";
-	os << " -" << getHeight() / 2 << _sideLength_ / 2 << " translate movepath 0 0 moveto ";
+	os << "288 396 translate\n 0 0 moveto\n ";
 	for (auto i = 0; i < (_numSides_ - 1); i++) {
-		os << degrees << " rotate\n";
+		os << 360/_numSides_ << " rotate\n";
 		os << _sideLength_ << " 0 rlineto\n";
 	}
 	os << "closepath\nstroke\n";
@@ -87,10 +85,11 @@ double Rectangle::getWidth() const {
 }
 
 void Rectangle::generatePostScript(std::ostream& os) const {
-	os << "gsave\nnewpath\n0 0 translate\n0 " << getHeight() << " moveto\n";
-	os << getWidth() << " " << getHeight() << " rlineto\n" << getWidth() << " 0 rlineto\n0 0 rlineto\n";
+	os << "gsave\nnewpath\n288 396 translate\n" << "0 0 moveto\n";
+	os << getWidth() << " 0 rlineto\n0 " << getHeight() << " rlineto\n"<<-getWidth()<<" 0 rlineto\n";
 	os << " closepath\nstroke\n";
-	os << "grestore\n\n";
+	os << "grestore\n";
+	os << "showpage\n\n";
 }
 
 // Spacer
