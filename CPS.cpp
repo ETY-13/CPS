@@ -235,8 +235,6 @@ void VerticalShape::generatePostScript(std::ostream& os) const {
 }
 
 
-
-
 // HorizontalShape
 
 HorizontalShape::HorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i) : _shape_(i) {
@@ -273,7 +271,6 @@ void HorizontalShape::generatePostScript(std::ostream& os) const {
 		_shape_[i]->generatePostScript(os);
 		os << " grestore \n";
 	}
-
 
 }
 
@@ -319,12 +316,21 @@ void arcOfShapes::generatePostScript(std::ostream& os) const {
     auto sections = _degrees_/_numOfShapes_;
     auto degFirst = 0;
     auto degSecond = sections;
+    auto xCord = cos(degSecond*(3.14/180))*_radius_;
+    auto yCord = sin(degSecond*(3.14/180))*_radius_;
+
     os << "gsave\nnewpath\n288 396 translate\n" << "0 0 moveto\n";
-    for (const auto& shape : _shape_){
+    for (auto i = 0; i < _shape_.size(); ++i) {
+        os << "gsave\n";
         os << "0 0 " << _radius_ << " " << degFirst << " " << degSecond << " arc\n";
-        shape->generatePostScript(os);
+        os << xCord << " " << yCord-((_shape_[i]->getHeight())/2) << " translate\n";
+
+        _shape_[i]->generatePostScript(os);
         degFirst += sections;
         degSecond += sections;
+        xCord = cos(degSecond*(3.14/180))*_radius_;
+        yCord = sin(degSecond*(3.14/180))*_radius_;
+        os << "grestore\n";
     }
 	os << "grestore\n\n";
 }
