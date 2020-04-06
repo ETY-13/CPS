@@ -26,7 +26,7 @@ void Circle::generatePostScript(std::ostream& os) const {
 	os << "0 0 " << getHeight() / 2 << " 0 360 arc\n";
 	os << "closepath\nstroke\n";
 	os << "grestore\n\n";
-	
+
 }
 
 // Polygon
@@ -88,7 +88,7 @@ void Rectangle::generatePostScript(std::ostream& os) const {
 	os << "gsave\n" << -(_width_ + 5)<<" 0 "<<"translate\n"<<"0 0 moveto\n";
 	os << getWidth() << " 0 rlineto\n0 " << getHeight() << " rlineto\n"<<-getWidth()<<" 0 rlineto\n";
 	os << " closepath\nstroke\n";
-	os << "grestore\n";	
+	os << "grestore\n";
 }
 
 // Spacer
@@ -159,7 +159,7 @@ void ScaledShape::generatePostScript(std::ostream& os) const {
 	os << "gsave\n" <<  _sx_ << " " << _sy_ << " scale\n";
 	_s_->generatePostScript(os);
 	os << "grestore\n";
-	
+
 }
 
 // LayeredShape
@@ -219,11 +219,11 @@ double VerticalShape::getWidth() const {
 	return _width_;
 }
 void VerticalShape::generatePostScript(std::ostream& os) const {
-	
+
 	auto maxHeight = 0.0;
 	for (auto i = 0; i < _shape_.size(); ++i) {
 		os << " gsave ";
-		
+
 		if (i > 0) {
 			maxHeight += _shape_[i - 1] -> getHeight();
 			os << "0 " << maxHeight<< " " << "translate\n";
@@ -231,9 +231,9 @@ void VerticalShape::generatePostScript(std::ostream& os) const {
 		_shape_[i]->generatePostScript(os);
 		os << " grestore \n";
 	}
-	
+
 }
-	
+
 
 
 
@@ -274,7 +274,7 @@ void HorizontalShape::generatePostScript(std::ostream& os) const {
 		os << " grestore \n";
 	}
 
-	
+
 }
 
 // Custom arcOfShapes
@@ -316,13 +316,15 @@ double arcOfShapes::getWidth() const {
 }
 
 void arcOfShapes::generatePostScript(std::ostream& os) const {
-    auto deg = _degrees_;
-    auto sections = deg/_numOfShapes_;
+    auto sections = _degrees_/_numOfShapes_;
+    auto degFirst = 0;
+    auto degSecond = sections;
     os << "gsave\nnewpath\n288 396 translate\n" << "0 0 moveto\n";
     for (const auto& shape : _shape_){
-        os << "0 0 " << _radius_ << " " << deg << " " << _degrees_ << " arc";
+        os << "0 0 " << _radius_ << " " << degFirst << " " << degSecond << " arc\n";
         shape->generatePostScript(os);
-        deg -= sections;
+        degFirst += sections;
+        degSecond += sections;
     }
 	os << "grestore\n\n";
 }

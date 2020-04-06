@@ -20,7 +20,7 @@ using std::ios;
 void getShapetoFile() {
     filebuf outfile;
     outfile.open("shape.ps", ios::out);
-    
+
     ostream os(&outfile);
     auto circle = makeCircle(4);
     auto poly = makePolygon(6, 50);
@@ -34,7 +34,7 @@ void getShapetoFile() {
     auto layer = makeLayeredShape({ sqaure,triangle,rect });
     auto vertical = makeVerticalShape({ poly, rect, sqaure });
     auto horizontal = makeHorizontalShape({ poly,rect,sqaure });
-    auto arc = makeArcShape({ poly,rect,sqaure }, Angle::R180, 20.0);
+    auto arc = makeArcShape({ poly,rect,sqaure }, Angle::R270, 75.0);
     auto center = inCenter();
     os << "% circle\n"<<center;
     circle->generatePostScript(os);
@@ -69,11 +69,11 @@ void getShapetoFile() {
     os << "%arc\n";
     arc->generatePostScript(os);
     os << show();
-   
+
 
 
     outfile.close();
-   
+
 }
 
 int main(int argc, char* argv[]) {
