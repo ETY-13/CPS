@@ -138,7 +138,7 @@ private:
     std::vector<std::shared_ptr<Shape>> _shape_;
 	double _width_;
 	double _height_;
-	int numOfShapes;
+	int _numOfShapes_;
 	int _degrees_;
 	double _radius_;
 };

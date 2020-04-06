@@ -258,14 +258,12 @@ void HorizontalShape::generatePostScript(std::ostream& os) const {
 	os << "grestore\n\n";
 }
 
-
 // Custom arcOfShapes
 
 arcOfShapes::arcOfShapes(std::initializer_list<std::shared_ptr<Shape>> i, Angle a, double radius) :_shape_(i), _radius_(radius){
-	auto dummy = 0.0;
-	numOfShapes = 0;
+	_numOfShapes_ = 0;
 	for (auto shape : i) {
-    numOfShapes++;
+    _numOfShapes_++;
 	}
 	switch (a)
 	{
@@ -286,8 +284,8 @@ arcOfShapes::arcOfShapes(std::initializer_list<std::shared_ptr<Shape>> i, Angle 
 		break;
 	default:
 		_degrees_ = 0;
-		_height_ = dummy;
-		_width_ = dummy;
+		_height_ = 0.0;
+		_width_ = 0.0;
 	}
 }
 double arcOfShapes::getHeight()const {
@@ -299,16 +297,15 @@ double arcOfShapes::getWidth() const {
 }
 
 void arcOfShapes::generatePostScript(std::ostream& os) const {
-
-	/*
-	0 5 360 {              % Go from 0 to 360 degrees in 10 degree steps
-	  gsave                 % Keep rotations temporary
-		300 300 moveto
-		rotate              % Rotate by degrees on stack from 'for'
-		72 0 box stroke
-	  grestore              % Get back the unrotated state
-	} for
-	*/
+    auto deg = _degrees_;
+    auto sections = deg/_numOfShapes_;
+    os << "gsave\nnewpath\n288 396 translate\n" << "0 0 moveto\n";
+    for (const auto& shape : _shape_){
+        os << "0 0 " << _radius_ << " " << deg << " " << _degrees_ << " arc";
+        shape->generatePostScript(os);
+        deg -= sections;
+    }
+	os << "grestore\n\n";
 }
 
 // Utility functions
