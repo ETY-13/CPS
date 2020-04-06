@@ -111,14 +111,17 @@ RotatedShape::RotatedShape(std::shared_ptr<Shape> s, Angle a) : _s_(s) {
 	switch (a)
 	{
 	case Angle::R90:
+	    _degrees_ = 90;
 		_height_ = s->getWidth();
 		_width_ = s->getHeight();
 		break;
 	case Angle::R180:
+	    _degrees_ = 180;
 		_height_ = s->getHeight();
 		_width_ = s->getWidth();
 		break;
 	case Angle::R270:
+	    _degrees_ = 270;
 		_height_ = s->getWidth();
 		_width_ = s->getHeight();
 		break;
@@ -134,14 +137,14 @@ double RotatedShape::getWidth() const {
 	return _width_;
 }
 void RotatedShape::generatePostScript(std::ostream& os) const {
-	os << "gsave\n";
+	os << "gsave\n" << _degrees_ << " rotate\n";
 	_s_->generatePostScript(os);
 	os << "grestore\n\n";
 }
 
 // ScaledShape
 
-ScaledShape::ScaledShape(std::shared_ptr<Shape> s, double sx, double sy) :_width_(s->getWidth()* sx), _height_(s->getHeight()* sy), _s_(s) {}
+ScaledShape::ScaledShape(std::shared_ptr<Shape> s, double sx, double sy) :_width_(s->getWidth()* sx), _height_(s->getHeight()* sy), _s_(s),_sx_(sx),_sy_(sy) {}
 double ScaledShape::getHeight() const {
 	return _height_;
 }
@@ -149,14 +152,14 @@ double ScaledShape::getWidth() const {
 	return _width_;
 }
 void ScaledShape::generatePostScript(std::ostream& os) const {
-	os << "gsave\n";
+	os << "gsave\n" <<  _sx_ << " " << _sy_ << " scale\n";
 	_s_->generatePostScript(os);
 	os << "grestore\n\n";
 }
 
 // LayeredShape
 
-LayeredShape::LayeredShape(std::initializer_list<std::shared_ptr<Shape>> i) {
+LayeredShape::LayeredShape(std::initializer_list<std::shared_ptr<Shape>> i) : _shape_(i){
 	double height = 0.0;
 	double width = 0.0;
 	for (auto shape : i) {
@@ -171,7 +174,6 @@ LayeredShape::LayeredShape(std::initializer_list<std::shared_ptr<Shape>> i) {
 
 	_height_ = height;
 	_width_ = width;
-	std::vector<std::shared_ptr<Shape>> _shape_ = i;
 }
 double LayeredShape::getHeight() const {
 	return _height_;
@@ -259,24 +261,28 @@ void HorizontalShape::generatePostScript(std::ostream& os) const {
 
 // Custom arcOfShapes
 
-arcOfShapes::arcOfShapes(std::initializer_list<std::shared_ptr<Shape>> i, Angle a, double radius) :_shape_(i), _radius_(radius) {
+arcOfShapes::arcOfShapes(std::initializer_list<std::shared_ptr<Shape>> i, Angle a, double radius) :_shape_(i), _radius_(radius){
 	auto dummy = 0.0;
+	numOfShapes = 0;
+	for (auto shape : i) {
+    numOfShapes++;
+	}
 	switch (a)
 	{
 	case Angle::R90:
 		_degrees_ = 90;
-		_width_ = dummy;
-		_height_ = dummy;
+		_width_ = radius;
+		_height_ = radius;
 		break;
 	case Angle::R180:
 		_degrees_ = 180;
-		_width_ = dummy;
-		_height_ = dummy;
+		_width_ = radius*2;
+		_height_ = radius;
 		break;
 	case Angle::R270:
 		_degrees_ = 270;
-		_width_ = dummy;
-		_height_ = dummy;
+		_width_ = radius*2;
+		_height_ = radius*2;
 		break;
 	default:
 		_degrees_ = 0;

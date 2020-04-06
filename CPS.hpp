@@ -72,6 +72,7 @@ public:
 	void generatePostScript(std::ostream& os) const override;
 private:
     std::shared_ptr<Shape> _s_;
+    int _degrees_;
 	double _width_;
 	double _height_;
 
@@ -85,6 +86,8 @@ public:
 	void generatePostScript(std::ostream& os) const override;
 private:
     std::shared_ptr<Shape> _s_;
+    double _sx_;
+    double _sy_;
 	double _width_;
 	double _height_;
 };
@@ -135,6 +138,7 @@ private:
     std::vector<std::shared_ptr<Shape>> _shape_;
 	double _width_;
 	double _height_;
+	int numOfShapes;
 	int _degrees_;
 	double _radius_;
 };

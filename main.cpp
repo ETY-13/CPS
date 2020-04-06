@@ -28,7 +28,8 @@ void getShapetoFile() {
     auto poly3 = makePolygon(5, 50);
     auto rect = makeRectangle(20, 20);
     auto tria = makeTriangle(45);
-    //auto triaRot = makeRotatedShape(tria,); idk how to make an angle
+    auto triaRot = makeRotatedShape(tria,Angle::R270);
+    auto triaScal = makeScaledShape(tria,5.0,10.0);
     os << "% circle\n";
     circle->generatePostScript(os);
     os << "% polygon\n";
@@ -41,8 +42,10 @@ void getShapetoFile() {
     rect->generatePostScript(os);
     os << "%triangle\n";
     tria->generatePostScript(os);
-    //os << "%Rotated triangle\n";
-    //triaRot->generatePostScript(os);
+    os << "%Rotated triangle\n";
+    triaRot->generatePostScript(os);
+    os << "%Scaled triangle\n";
+    triaScal->generatePostScript(os);
     outfile.close();
 
 }
