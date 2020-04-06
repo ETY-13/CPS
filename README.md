@@ -6,7 +6,7 @@ GOAL: To implement a C++ library (CPS) that will allow its user to specify drawi
 
 Files created - 
 1. main.cpp: for running the test_suite.cpp
-2. CPS.cpp: contains the 
+2. CPS.cpp: contains the postscript generation for each shape and implemented as a class of shapes.
 3. CPS.hpp: header file for all the shape classes and their respective properties
 4. test_suite.cpp: used the catch testing framework
 
