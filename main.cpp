@@ -22,7 +22,7 @@ void getShapetoFile() {
     outfile.open("shape.ps", ios::out);
 
     ostream os(&outfile);
-    auto circle = makeCircle(4);
+    auto circle = makeCircle(50);
     auto poly = makePolygon(6, 50);
     auto poly2 = makePolygon(8, 75.5);
     auto poly3 = makePolygon(5, 50);
@@ -69,9 +69,6 @@ void getShapetoFile() {
     os << "%arc\n";
     arc->generatePostScript(os);
     os << show();
-
-
-
     outfile.close();
 
 }

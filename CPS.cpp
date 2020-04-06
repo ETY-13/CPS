@@ -261,14 +261,12 @@ double HorizontalShape::getWidth() const {
 	return _width_;
 }
 void HorizontalShape::generatePostScript(std::ostream& os) const {
-	os << "270 " << "rotate\n";
 	auto maxHeight = 0.0;
 	for (auto i = 0; i < _shape_.size(); ++i) {
-		os << " gsave ";
-
-		if (i > 0) {
-			maxHeight += _shape_[i - 1]->getHeight();
-			os << "0 " << maxHeight << " " << "translate\n";
+		os << " gsave\n";
+		maxHeight += _shape_[i]->getWidth()/2 + 5 *i;
+		if (i > 0) {		
+			os << maxHeight << " 0 " << "translate\n";
 		}
 		_shape_[i]->generatePostScript(os);
 		os << " grestore \n";
