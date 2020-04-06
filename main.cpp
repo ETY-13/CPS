@@ -20,20 +20,22 @@ using std::ios;
 void getShapetoFile() {
     filebuf outfile;
     outfile.open("shape.ps", ios::out);
-    auto center = inCenter();
+    
     ostream os(&outfile);
     auto circle = makeCircle(4);
     auto poly = makePolygon(6, 50);
     auto poly2 = makePolygon(8, 75.5);
     auto poly3 = makePolygon(5, 50);
-    auto rect = makeRectangle(20, 20);
-    auto sqaure = makeSquare(40);
-    auto triangle = makeTriangle(40);
+    auto rect = makeRectangle(40, 50);
+    auto sqaure = makeSquare(50);
+    auto triangle = makeTriangle(50);
     auto roshape = makeRotatedShape(triangle, Angle::R270);
     auto scaleShape = makeScaledShape(triangle,2.0, 2.0);
-    auto layer = makeLayeredShape({ sqaure,triangle,poly });
+    auto layer = makeLayeredShape({ sqaure,triangle,rect });
     auto vertical = makeVerticalShape({ poly, rect, sqaure });
-
+    auto horizontal = makeHorizontalShape({ poly,rect,sqaure });
+    auto arc = makeArcShape({ poly,rect,sqaure }, Angle::R180, 20.0);
+    auto center = inCenter();
     os << "% circle\n"<<center;
     circle->generatePostScript(os);
     os << show();
@@ -58,15 +60,20 @@ void getShapetoFile() {
     os << "%layeredShaped\n" << center;
     layer->generatePostScript(os);
     os << show();
-    os << "%verticalShape\n";
+    os << "%verticalShape\n" << center;
     vertical->generatePostScript(os);
     os << show();
+    os << "%horon\n" << center;
+    horizontal->generatePostScript(os);
+    os << show();
+    os << "%arc\n";
+    arc->generatePostScript(os);
+    os << show();
+   
 
 
     outfile.close();
    
-
-
 }
 
 int main(int argc, char* argv[]) {

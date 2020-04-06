@@ -85,7 +85,7 @@ double Rectangle::getWidth() const {
 }
 
 void Rectangle::generatePostScript(std::ostream& os) const {
-	os << "gsave\n" << "0 0 moveto\n";
+	os << "gsave\n" << -(_width_ + 5)<<" 0 "<<"translate\n"<<"0 0 moveto\n";
 	os << getWidth() << " 0 rlineto\n0 " << getHeight() << " rlineto\n"<<-getWidth()<<" 0 rlineto\n";
 	os << " closepath\nstroke\n";
 	os << "grestore\n";	
@@ -220,35 +220,19 @@ double VerticalShape::getWidth() const {
 }
 void VerticalShape::generatePostScript(std::ostream& os) const {
 	
-	os << " gsave ";
-
-	std::vector<double> heights{};
-	std::vector<double> width{};
-	double totalHeight = 0;
-	auto totalWidth = 0.0;
-	int numberOfShapes = 0;
-
-	for (const auto shape : _shape_) {
-		double temp = shape->getHeight();
-		totalHeight += temp;
-		heights.push_back(temp);
-		double temp2 = shape->getWidth();
-		totalWidth += temp;
-		width.push_back(temp);
-		++numberOfShapes;
+	auto maxHeight = 0.0;
+	for (auto i = 0; i < _shape_.size(); ++i) {
+		os << " gsave ";
+		
+		if (i > 0) {
+			maxHeight += _shape_[i - 1] -> getHeight();
+			os << "0 " << maxHeight<< " " << "translate\n";
+		}
+		_shape_[i]->generatePostScript(os);
+		os << " grestore \n";
 	}
 	
-
-
-	os << totalWidth/2.0<<" " << totalHeight / 2.0 << " translate ";
-	for (int i = 0; i < numberOfShapes; ++i) {
-		os << "0 -" << heights[i] / 2.0 << " translate \n";
-		_shape_[i]->generatePostScript(os);
-		os << -width[i]/2.0<<" "<<"-" << heights[i] / 2.0 << " translate \n";
-	}
-
-	os << " grestore \n";
-	}
+}
 	
 
 
@@ -277,14 +261,20 @@ double HorizontalShape::getWidth() const {
 	return _width_;
 }
 void HorizontalShape::generatePostScript(std::ostream& os) const {
-	os << "gsave\n";
-	os << "0 " << getHeight() / 2.0 << " translate\n";
-	for (const auto& shape : _shape_) {
-		os << (shape->getWidth()) / 2.0 << " 0 translate\n";  //Check this
-		shape->generatePostScript(os);
-		os << (shape->getWidth()) / 2.0 << " 0 translate\n"; //Check this
+	os << "270 " << "rotate\n";
+	auto maxHeight = 0.0;
+	for (auto i = 0; i < _shape_.size(); ++i) {
+		os << " gsave ";
+
+		if (i > 0) {
+			maxHeight += _shape_[i - 1]->getHeight();
+			os << "0 " << maxHeight << " " << "translate\n";
+		}
+		_shape_[i]->generatePostScript(os);
+		os << " grestore \n";
 	}
-	os << "grestore\n\n";
+
+	
 }
 
 // Custom arcOfShapes
@@ -381,6 +371,9 @@ std::shared_ptr<Shape> makeVerticalShape(std::initializer_list<std::shared_ptr<S
 
 std::shared_ptr<Shape> makeHorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i) {
 	return make_shared<HorizontalShape>(i);
+}
+std::shared_ptr<Shape>makeArcShape(std::initializer_list<std::shared_ptr<Shape>> i,Angle a,double rad) {
+	return make_shared<arcOfShapes>(i,a,rad);
 }
 
 string inCenter() {

@@ -156,6 +156,7 @@ std::shared_ptr<Shape> makeScaledShape(std::shared_ptr<Shape> s, double sx, doub
 std::shared_ptr<Shape> makeLayeredShape(std::initializer_list<std::shared_ptr<Shape>> i);
 std::shared_ptr<Shape> makeVerticalShape(std::initializer_list<std::shared_ptr<Shape>> i);
 std::shared_ptr<Shape> makeHorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i);
+std::shared_ptr<Shape>makeArcShape(std::initializer_list<std::shared_ptr<Shape>> i, Angle a, double rad);
 std::string inCenter();
 std::string show();
 #endif // !CPS_HPP
