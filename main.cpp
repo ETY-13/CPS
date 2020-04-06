@@ -16,14 +16,16 @@ using std::filebuf;
 #include<iostream>
 using std::ios;
 
-// out put shape to file 
+// out put shape to file
 void getShapetoFile() {
     filebuf outfile;
     outfile.open("shape.ps", ios::out);
     auto center = inCenter();
     ostream os(&outfile);
-    auto cirlce = makeCircle(4);
-    auto poly = makePolygon(8, 10);
+    auto circle = makeCircle(4);
+    auto poly = makePolygon(6, 50);
+    auto poly2 = makePolygon(8, 75.5);
+    auto poly3 = makePolygon(5, 50);
     auto rect = makeRectangle(20, 20);
     auto sqaure = makeSquare(40);
     auto triangle = makeTriangle(40);
@@ -33,7 +35,7 @@ void getShapetoFile() {
     auto vertical = makeVerticalShape({ poly, rect, sqaure });
 
     os << "% circle\n"<<center;
-    cirlce->generatePostScript(os);
+    circle->generatePostScript(os);
     os << show();
     os << "% polygon\n" << center;;
     poly->generatePostScript(os);
@@ -60,7 +62,6 @@ void getShapetoFile() {
     vertical->generatePostScript(os);
     os << show();
 
-    std::string stuff;
 
     outfile.close();
    
@@ -70,17 +71,17 @@ void getShapetoFile() {
 
 int main(int argc, char* argv[]) {
 
-    Catch::Session session;  
-    int result;         
+    Catch::Session session;
+    int result;
 
     result = session.applyCommandLine(argc, argv);
 
     if (result !=0){
         return result;
     }
-    
+
     result = session.run();
-   
+
     getShapetoFile();
 
     return result;

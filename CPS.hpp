@@ -73,9 +73,9 @@ public:
 	void generatePostScript(std::ostream& os) const override;
 private:
     std::shared_ptr<Shape> _s_;
+    int _degrees_;
 	double _width_;
 	double _height_;
-	int _angle_;
 
 };
 
@@ -87,10 +87,11 @@ public:
 	void generatePostScript(std::ostream& os) const override;
 private:
     std::shared_ptr<Shape> _s_;
-	double _scaleX_;
-	double _scaleY_;
-	double _width_;
-	double _height_;
+
+    double _sx_;
+    double _sy_;
+    double _width_;
+    double _height_;
 };
 
 class LayeredShape : public Shape {
@@ -139,6 +140,7 @@ private:
     std::vector<std::shared_ptr<Shape>> _shape_;
 	double _width_;
 	double _height_;
+	int _numOfShapes_;
 	int _degrees_;
 	double _radius_;
 };
