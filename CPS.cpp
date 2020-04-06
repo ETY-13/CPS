@@ -62,7 +62,7 @@ double Polygon::getWidth() const {
 
 void Polygon::generatePostScript(std::ostream& os) const {
 	os << "gsave\nnewpath\n";
-	os << "288 396 translate\n 0 0 moveto\n ";
+	os << "0 0 translate\n 0 0 moveto\n "; //figure out where to translate to
 	for (auto i = 0; i < (_numSides_ - 1); i++) {
 		os << 360/_numSides_ << " rotate\n";
 		os << _sideLength_ << " 0 rlineto\n";
