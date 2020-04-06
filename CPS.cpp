@@ -22,11 +22,11 @@ double Circle::getWidth() const {
 }
 
 void Circle::generatePostScript(std::ostream& os) const {
-	os << "gsave\nnewpath\n288 396 translate\n";
+	os << "gsave\n";
 	os << "0 0 " << getHeight() / 2 << " 0 360 arc\n";
 	os << "closepath\nstroke\n";
 	os << "grestore\n\n";
-	os << "showpage\n\n";
+	
 }
 
 // Polygon
@@ -61,15 +61,15 @@ double Polygon::getWidth() const {
 }
 
 void Polygon::generatePostScript(std::ostream& os) const {
-	os << "gsave\nnewpath\n";
-	os << "288 396 translate\n 0 0 moveto\n ";
+	int interiorAngle = 180 - (((_numSides_ - 2) * 180) / _numSides_);
+	os << "gsave\n";
+	os << "0 0 moveto\n ";
 	for (auto i = 0; i < (_numSides_ - 1); i++) {
 		os << 360/_numSides_ << " rotate\n";
 		os << _sideLength_ << " 0 rlineto\n";
 	}
 	os << "closepath\nstroke\n";
 	os << "grestore\n\n";
-	os << "showpage\n\n";
 }
 
 // Rectangle
@@ -85,11 +85,10 @@ double Rectangle::getWidth() const {
 }
 
 void Rectangle::generatePostScript(std::ostream& os) const {
-	os << "gsave\nnewpath\n288 396 translate\n" << "0 0 moveto\n";
+	os << "gsave\n" << "0 0 moveto\n";
 	os << getWidth() << " 0 rlineto\n0 " << getHeight() << " rlineto\n"<<-getWidth()<<" 0 rlineto\n";
 	os << " closepath\nstroke\n";
-	os << "grestore\n";
-	os << "showpage\n\n";
+	os << "grestore\n";	
 }
 
 // Spacer
@@ -113,18 +112,22 @@ RotatedShape::RotatedShape(std::shared_ptr<Shape> s, Angle a) : _s_(s) {
 	case Angle::R90:
 		_height_ = s->getWidth();
 		_width_ = s->getHeight();
+		_angle_ = 90;
 		break;
 	case Angle::R180:
 		_height_ = s->getHeight();
 		_width_ = s->getWidth();
+		_angle_ = 180;
 		break;
 	case Angle::R270:
 		_height_ = s->getWidth();
 		_width_ = s->getHeight();
+		_angle_ = 270;
 		break;
 	default:
 		_height_ = 0.0;
 		_width_ = 0.0;
+		_angle_ = 0;
 	}
 }
 double RotatedShape::getHeight() const {
@@ -134,14 +137,15 @@ double RotatedShape::getWidth() const {
 	return _width_;
 }
 void RotatedShape::generatePostScript(std::ostream& os) const {
-	os << "gsave\n";
+	os <<"gsave\n"<<_angle_ << " rotate\n";
 	_s_->generatePostScript(os);
-	os << "grestore\n\n";
+	os << "grestore\n";
 }
 
 // ScaledShape
 
-ScaledShape::ScaledShape(std::shared_ptr<Shape> s, double sx, double sy) :_width_(s->getWidth()* sx), _height_(s->getHeight()* sy), _s_(s) {}
+ScaledShape::ScaledShape(std::shared_ptr<Shape> s, double sx, double sy) :_scaleX_(sx),_scaleY_(sy), _width_(s->getWidth()* sx), 
+                                                                                       _height_(s->getHeight()* sy), _s_(s) {}
 double ScaledShape::getHeight() const {
 	return _height_;
 }
@@ -149,9 +153,10 @@ double ScaledShape::getWidth() const {
 	return _width_;
 }
 void ScaledShape::generatePostScript(std::ostream& os) const {
-	os << "gsave\n";
+	os <<"gsave\n"<<_scaleX_ << " " << _scaleY_ << " " << "scale\n";
 	_s_->generatePostScript(os);
-	os << "grestore\n\n";
+	os << "grestore\n";
+	
 }
 
 // LayeredShape
@@ -167,11 +172,12 @@ LayeredShape::LayeredShape(std::initializer_list<std::shared_ptr<Shape>> i) {
 		if (shape->getWidth() > width) {
 			width = shape->getWidth();
 		}
+		_shape_.push_back(shape);
 	}
 
 	_height_ = height;
 	_width_ = width;
-	std::vector<std::shared_ptr<Shape>> _shape_ = i;
+	
 }
 double LayeredShape::getHeight() const {
 	return _height_;
@@ -211,16 +217,39 @@ double VerticalShape::getWidth() const {
 	return _width_;
 }
 void VerticalShape::generatePostScript(std::ostream& os) const {
-	os << "gsave\n";
-	os << getWidth() / 2.0 << " 0 translate\n";
-	for (const auto& shape : _shape_) {
-		os << "0 " << (shape->getHeight()) / 2.0 << " translate\n";  //Check this
-		shape->generatePostScript(os);
-		os << "0 " << (shape->getHeight()) / 2.0 << " translate\n"; //Check this
-	}
-	os << "grestore\n\n";
+	
+	os << " gsave ";
 
-}
+	std::vector<double> heights{};
+	std::vector<double> width{};
+	double totalHeight = 0;
+	auto totalWidth = 0.0;
+	int numberOfShapes = 0;
+
+	for (const auto shape : _shape_) {
+		double temp = shape->getHeight();
+		totalHeight += temp;
+		heights.push_back(temp);
+		double temp2 = shape->getWidth();
+		totalWidth += temp;
+		width.push_back(temp);
+		++numberOfShapes;
+	}
+	
+
+
+	os << totalWidth/2.0<<" " << totalHeight / 2.0 << " translate ";
+	for (int i = 0; i < numberOfShapes; ++i) {
+		os << "0 -" << heights[i] / 2.0 << " translate \n";
+		_shape_[i]->generatePostScript(os);
+		os << -width[i]/2.0<<" "<<"-" << heights[i] / 2.0 << " translate \n";
+	}
+
+	os << " grestore \n";
+	}
+	
+
+
 
 // HorizontalShape
 
@@ -349,4 +378,11 @@ std::shared_ptr<Shape> makeVerticalShape(std::initializer_list<std::shared_ptr<S
 
 std::shared_ptr<Shape> makeHorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i) {
 	return make_shared<HorizontalShape>(i);
+}
+
+string inCenter() {
+	return ("288 396 translate\n");
+}
+string show() {
+	return ("showpage\n");
 }

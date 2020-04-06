@@ -4,6 +4,7 @@
 #include<ostream>
 #include<memory>
 #include <vector>
+#include<string>
 enum class Angle { R90, R180, R270 };
 
 class Shape {
@@ -74,6 +75,7 @@ private:
     std::shared_ptr<Shape> _s_;
 	double _width_;
 	double _height_;
+	int _angle_;
 
 };
 
@@ -85,6 +87,8 @@ public:
 	void generatePostScript(std::ostream& os) const override;
 private:
     std::shared_ptr<Shape> _s_;
+	double _scaleX_;
+	double _scaleY_;
 	double _width_;
 	double _height_;
 };
@@ -150,5 +154,7 @@ std::shared_ptr<Shape> makeScaledShape(std::shared_ptr<Shape> s, double sx, doub
 std::shared_ptr<Shape> makeLayeredShape(std::initializer_list<std::shared_ptr<Shape>> i);
 std::shared_ptr<Shape> makeVerticalShape(std::initializer_list<std::shared_ptr<Shape>> i);
 std::shared_ptr<Shape> makeHorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i);
+std::string inCenter();
+std::string show();
 #endif // !CPS_HPP
 

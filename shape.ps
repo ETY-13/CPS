@@ -1,19 +1,16 @@
 % circle
-gsave
-newpath
 288 396 translate
+gsave
 0 0 4 0 360 arc
 closepath
 stroke
 grestore
 
 showpage
-
 % polygon
-gsave
-newpath
 288 396 translate
- 0 0 moveto
+gsave
+0 0 moveto
  45 rotate
 10 0 rlineto
 45 rotate
@@ -33,11 +30,9 @@ stroke
 grestore
 
 showpage
-
 %rectangle
-gsave
-newpath
 288 396 translate
+gsave
 0 0 moveto
 20 0 rlineto
 0 20 rlineto
@@ -46,4 +41,160 @@ newpath
 stroke
 grestore
 showpage
+%sqaure
+288 396 translate
+gsave
+0 0 moveto
+ 90 rotate
+40 0 rlineto
+90 rotate
+40 0 rlineto
+90 rotate
+40 0 rlineto
+closepath
+stroke
+grestore
 
+showpage
+%triangle
+288 396 translate
+gsave
+0 0 moveto
+ 120 rotate
+40 0 rlineto
+120 rotate
+40 0 rlineto
+closepath
+stroke
+grestore
+
+showpage
+%rotatedShape
+288 396 translate
+gsave
+270 rotate
+gsave
+0 0 moveto
+ 120 rotate
+40 0 rlineto
+120 rotate
+40 0 rlineto
+closepath
+stroke
+grestore
+
+grestore
+showpage
+%scaleShape
+288 396 translate
+gsave
+2 2 scale
+gsave
+0 0 moveto
+ 120 rotate
+40 0 rlineto
+120 rotate
+40 0 rlineto
+closepath
+stroke
+grestore
+
+grestore
+showpage
+%layeredShaped
+288 396 translate
+gsave
+gsave
+0 0 moveto
+ 90 rotate
+40 0 rlineto
+90 rotate
+40 0 rlineto
+90 rotate
+40 0 rlineto
+closepath
+stroke
+grestore
+
+gsave
+0 0 moveto
+ 120 rotate
+40 0 rlineto
+120 rotate
+40 0 rlineto
+closepath
+stroke
+grestore
+
+gsave
+0 0 moveto
+ 45 rotate
+10 0 rlineto
+45 rotate
+10 0 rlineto
+45 rotate
+10 0 rlineto
+45 rotate
+10 0 rlineto
+45 rotate
+10 0 rlineto
+45 rotate
+10 0 rlineto
+45 rotate
+10 0 rlineto
+closepath
+stroke
+grestore
+
+grestore
+
+showpage
+%verticalShape
+ gsave 42.1 42.1 translate -12.1 12.1 translate 
+gsave
+0 0 moveto
+ 45 rotate
+10 0 rlineto
+45 rotate
+10 0 rlineto
+45 rotate
+10 0 rlineto
+45 rotate
+10 0 rlineto
+45 rotate
+10 0 rlineto
+45 rotate
+10 0 rlineto
+45 rotate
+10 0 rlineto
+closepath
+stroke
+grestore
+
+-12.1 -12.1 translate 
+-10 10 translate 
+gsave
+0 0 moveto
+20 0 rlineto
+0 20 rlineto
+-20 0 rlineto
+ closepath
+stroke
+grestore
+-10 -10 translate 
+-20 20 translate 
+gsave
+0 0 moveto
+ 90 rotate
+40 0 rlineto
+90 rotate
+40 0 rlineto
+90 rotate
+40 0 rlineto
+closepath
+stroke
+grestore
+
+-20 -20 translate 
+ grestore 
+showpage
