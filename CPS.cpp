@@ -65,7 +65,7 @@ void Polygon::generatePostScript(std::ostream& os) const {
 	os << "gsave\n";
 	os << "0 0 moveto\n ";
 	for (auto i = 0; i < (_numSides_ - 1); i++) {
-		os << 360/_numSides_ << " rotate\n";
+		os << interiorAngle << " rotate\n";
 		os << _sideLength_ << " 0 rlineto\n";
 	}
 	os << "closepath\nstroke\n";
@@ -222,14 +222,14 @@ void VerticalShape::generatePostScript(std::ostream& os) const {
 
 	auto maxHeight = 0.0;
 	for (auto i = 0; i < _shape_.size(); ++i) {
-		os << " gsave ";
+		os << " gsave\n";
 
 		if (i > 0) {
 			maxHeight += _shape_[i - 1] -> getHeight();
 			os << "0 " << maxHeight<< " " << "translate\n";
 		}
 		_shape_[i]->generatePostScript(os);
-		os << " grestore \n";
+		os << " grestore\n";
 	}
 
 }
@@ -240,7 +240,7 @@ void VerticalShape::generatePostScript(std::ostream& os) const {
 HorizontalShape::HorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i) : _shape_(i) {
 	double height = 0.0;
 	double width = 0.0;
-	for (auto shape : i) {
+	for (const auto shape : i) {
 
 		if (shape->getHeight() > height) {
 			height = shape->getHeight();
@@ -259,17 +259,16 @@ double HorizontalShape::getWidth() const {
 	return _width_;
 }
 void HorizontalShape::generatePostScript(std::ostream& os) const {
-	auto maxHeight = 0.0;
-	for (auto i = 0; i < _shape_.size(); ++i) {
-		os << " gsave\n";
-		maxHeight += _shape_[i]->getWidth()/2 + 5 *i;
-		if (i > 0) {		
-			os << maxHeight << " 0 " << "translate\n";
-		}
-		_shape_[i]->generatePostScript(os);
-		os << " grestore \n";
+
+	os << " gsave\n";
+
+	for (const auto shape : _shape_) {
+		os << shape->getWidth() / 2.0 << " 0 translate \n";
+		shape->generatePostScript(os);
+		os << shape->getWidth() / 2.0 << " 0 translate \n";
 	}
 
+	os << " grestore\n";
 }
 
 // Custom arcOfShapes
@@ -311,25 +310,22 @@ double arcOfShapes::getWidth() const {
 }
 
 void arcOfShapes::generatePostScript(std::ostream& os) const {
-    auto sections = _degrees_/_numOfShapes_;
-    auto degFirst = 0;
-    auto degSecond = sections;
-    auto xCord = cos(degSecond*(3.14/180))*_radius_;
-    auto yCord = sin(degSecond*(3.14/180))*_radius_;
+	auto sections = _degrees_ / _numOfShapes_;
+	auto degSecond = sections;
+	auto xCord = cos(degSecond * (3.14 / 180)) * _radius_;
+	auto yCord = sin(degSecond * (3.14 / 180)) * _radius_;
 
-    os << "gsave\nnewpath\n288 396 translate\n" << "0 0 moveto\n";
-    for (auto i = 0; i < _shape_.size(); ++i) {
-        os << "gsave\n";
-        os << "0 0 " << _radius_ << " " << degFirst << " " << degSecond << " arc\n";
-        os << xCord << " " << yCord-((_shape_[i]->getHeight())/2) << " translate\n";
+	os << "gsave\nnewpath\n288 396 translate\n" << "0 0 moveto\n";
+	for (auto i = 0; i < _shape_.size(); ++i) {
+		os << "gsave\n";
+		os << xCord << " " << yCord - ((_shape_[i]->getHeight()) / 2) << " translate\n";
 
-        _shape_[i]->generatePostScript(os);
-        degFirst += sections;
-        degSecond += sections;
-        xCord = cos(degSecond*(3.14/180))*_radius_;
-        yCord = sin(degSecond*(3.14/180))*_radius_;
-        os << "grestore\n";
-    }
+		_shape_[i]->generatePostScript(os);
+		degSecond += sections;
+		xCord = cos(degSecond * (3.14 / 180)) * _radius_;
+		yCord = sin(degSecond * (3.14 / 180)) * _radius_;
+		os << "grestore\n";
+	}
 	os << "grestore\n\n";
 }
 

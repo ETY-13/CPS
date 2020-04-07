@@ -34,7 +34,7 @@ void getShapetoFile() {
     auto layer = makeLayeredShape({ square,triangle,rect });
     auto vertical = makeVerticalShape({ poly, rect, square });
     auto horizontal = makeHorizontalShape({ poly,rect,square });
-    auto arc = makeArcShape({ poly,rect,square }, Angle::R90, 160.0);
+    auto arc = makeArcShape({ poly,rect,square }, Angle::R270, 160.0);
     auto center = inCenter();
     os << "% circle\n"<<center;
     circle->generatePostScript(os);

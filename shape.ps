@@ -1,7 +1,7 @@
 % circle
 288 396 translate
 gsave
-0 0 4 0 360 arc
+0 0 50 0 360 arc
 closepath
 stroke
 grestore
@@ -38,7 +38,7 @@ gsave
 stroke
 grestore
 showpage
-%sqaure
+%square
 288 396 translate
 gsave
 0 0 moveto
@@ -168,7 +168,8 @@ grestore
 showpage
 %verticalShape
 288 396 translate
- gsave gsave
+ gsave
+gsave
 0 0 moveto
  60 rotate
 50 0 rlineto
@@ -184,8 +185,9 @@ closepath
 stroke
 grestore
 
- grestore 
- gsave 0 86.7 translate
+ grestore
+ gsave
+0 86.7 translate
 gsave
 -45 0 translate
 0 0 moveto
@@ -195,8 +197,9 @@ gsave
  closepath
 stroke
 grestore
- grestore 
- gsave 0 136.7 translate
+ grestore
+ gsave
+0 136.7 translate
 gsave
 0 0 moveto
  90 rotate
@@ -209,12 +212,13 @@ closepath
 stroke
 grestore
 
- grestore 
+ grestore
 showpage
 %horon
 288 396 translate
-270 rotate
- gsave gsave
+ gsave
+50 0 translate 
+gsave
 0 0 moveto
  60 rotate
 50 0 rlineto
@@ -230,8 +234,8 @@ closepath
 stroke
 grestore
 
- grestore 
- gsave 0 86.7 translate
+50 0 translate 
+20 0 translate 
 gsave
 -45 0 translate
 0 0 moveto
@@ -241,8 +245,8 @@ gsave
  closepath
 stroke
 grestore
- grestore 
- gsave 0 136.7 translate
+20 0 translate 
+25 0 translate 
 gsave
 0 0 moveto
  90 rotate
@@ -255,14 +259,17 @@ closepath
 stroke
 grestore
 
- grestore 
+25 0 translate 
+ grestore
 showpage
 %arc
 gsave
 newpath
 288 396 translate
 0 0 moveto
-0 0 20 180 180 arcgsave
+gsave
+0.127412 116.65 translate
+gsave
 0 0 moveto
  60 rotate
 50 0 rlineto
@@ -278,7 +285,10 @@ closepath
 stroke
 grestore
 
-0 0 20 120 180 arcgsave
+grestore
+gsave
+-160 -24.7452 translate
+gsave
 -45 0 translate
 0 0 moveto
 40 0 rlineto
@@ -287,7 +297,10 @@ grestore
  closepath
 stroke
 grestore
-0 0 20 60 180 arcgsave
+grestore
+gsave
+-0.382236 -185 translate
+gsave
 0 0 moveto
  90 rotate
 50 0 rlineto
@@ -299,6 +312,7 @@ closepath
 stroke
 grestore
 
+grestore
 grestore
 
 showpage
