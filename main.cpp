@@ -31,9 +31,9 @@ void getShapetoFile() {
     auto triangle = makeTriangle(50);
     auto roshape = makeRotatedShape(triangle, Angle::R270);
     auto scaleShape = makeScaledShape(triangle,2.0, 2.0);
-    auto layer = makeLayeredShape({ square,triangle,rect });
+    auto layer = makeLayeredShape({ poly,square,triangle,rect });
     auto vertical = makeVerticalShape({ poly, rect, square });
-    auto horizontal = makeHorizontalShape({ poly,rect,square });
+    auto horizontal = makeHorizontalShape({ poly,rect,square});
     auto arc = makeArcShape({ poly,rect,square }, Angle::R270, 160.0);
     auto center = inCenter();
     os << "% circle\n"<<center;
@@ -70,7 +70,6 @@ void getShapetoFile() {
     arc->generatePostScript(os);
     os << show();
     outfile.close();
-
 }
 
 int main(int argc, char* argv[]) {

@@ -15,6 +15,18 @@ public:
 	virtual void generatePostScript(std::ostream& os) const = 0;
 };
 
+class GeneratePoscriptTemplate: public Shape {
+public:
+   GeneratePoscriptTemplate(std::initializer_list<std::shared_ptr<Shape>> i);
+   void generatePostScript(std::ostream& os) const override;
+   virtual void moveToPosition(int index, std::ostream& os) const = 0;
+protected:
+	std::vector<std::shared_ptr<Shape>> getShapes() const;
+private:
+	std::vector<std::shared_ptr<Shape>> _shape_;
+};
+
+
 class Circle: public Shape {
 public:
 	Circle(double radius);
@@ -50,9 +62,16 @@ private:
 	double _height_;
 };
 
-class Spacer: public Rectangle {
+class Spacer: public Shape {
 public:
 	Spacer(double width, double height);
+	double getHeight() const override;
+	double getWidth() const override;
+	void generatePostScript(std::ostream& os)const override;
+
+private:
+	double _width_;
+	double _height_;
 };
 
 class Square: public Polygon {
@@ -94,36 +113,34 @@ private:
     double _height_;
 };
 
-class LayeredShape : public Shape {
+class LayeredShape : public GeneratePoscriptTemplate {
 public:
 	LayeredShape(std::initializer_list<std::shared_ptr<Shape>> i);
 	double getHeight() const override;
 	double getWidth() const override;
-	void generatePostScript(std::ostream& os) const override;
+    void moveToPosition(int index, std::ostream& os)  const override;
 private:
-    std::vector<std::shared_ptr<Shape>> _shape_;
 	double _width_;
 	double _height_;
 };
 
-class VerticalShape : public Shape {
+class VerticalShape :  public GeneratePoscriptTemplate {
 public:
 	VerticalShape(std::initializer_list<std::shared_ptr<Shape>> i);
 	double getHeight() const override;
 	double getWidth() const override;
-	void generatePostScript(std::ostream& os) const override;
+	void moveToPosition(int index, std::ostream & os) const override;
 private:
-    std::vector<std::shared_ptr<Shape>> _shape_;
 	double _width_;
 	double _height_;
 };
 
-class HorizontalShape : public Shape {
+class HorizontalShape: public GeneratePoscriptTemplate {
 public:
 	HorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i);
 	double getHeight() const override;
 	double getWidth() const override;
-	void generatePostScript(std::ostream& os) const override;
+	void moveToPosition(int index, std::ostream& os) const override;
 private:
     std::vector<std::shared_ptr<Shape>> _shape_;
 	double _width_;

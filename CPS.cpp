@@ -9,6 +9,21 @@ using std::make_shared;
 #include<string>
 using std::string;
 
+// GeneratePoscriptTemplate
+
+void GeneratePoscriptTemplate::generatePostScript(std::ostream& os) const {
+	for (auto i = 0l; i < getShapes().size();++i) {
+		moveToPosition(i, os);
+		getShapes()[i]->generatePostScript(os);
+	}
+}
+GeneratePoscriptTemplate::GeneratePoscriptTemplate(std::initializer_list<std::shared_ptr<Shape>>i) :_shape_(i) {}
+
+
+std::vector<std::shared_ptr<Shape>>GeneratePoscriptTemplate::getShapes() const {
+	return _shape_;
+}
+
 // Circle
 
 Circle::Circle(double radius) :_radius_(radius) {}
@@ -85,7 +100,7 @@ double Rectangle::getWidth() const {
 }
 
 void Rectangle::generatePostScript(std::ostream& os) const {
-	os << "gsave\n" << -(_width_ + 5)<<" 0 "<<"translate\n"<<"0 0 moveto\n";
+	os << "gsave\n" << -(_width_ + 4)<<" 0 "<<"translate\n"<<"0 0 moveto\n";
 	os << getWidth() << " 0 rlineto\n0 " << getHeight() << " rlineto\n"<<-getWidth()<<" 0 rlineto\n";
 	os << " closepath\nstroke\n";
 	os << "grestore\n";
@@ -93,8 +108,15 @@ void Rectangle::generatePostScript(std::ostream& os) const {
 
 // Spacer
 
-Spacer::Spacer(double width, double height) : Rectangle(width, height) {}
+Spacer::Spacer(double width, double height): _width_(width), _height_(height){}
 
+double Spacer::getHeight() const {
+	return _height_;
+}
+double Spacer::getWidth() const {
+	return _width_;
+}
+void Spacer::generatePostScript(std::ostream& os) const {}
 // Square
 
 Square::Square(double sideLength) : Polygon(4, sideLength) {}
@@ -164,9 +186,11 @@ void ScaledShape::generatePostScript(std::ostream& os) const {
 
 // LayeredShape
 
-LayeredShape::LayeredShape(std::initializer_list<std::shared_ptr<Shape>> i) : _shape_(i){
+LayeredShape::LayeredShape(std::initializer_list<std::shared_ptr<Shape>> i) : GeneratePoscriptTemplate(i) {
+
 	double height = 0.0;
 	double width = 0.0;
+	auto shape = getShapes();
 	for (auto shape : i) {
 		if (shape->getHeight() > height) {
 			height = shape->getHeight();
@@ -175,29 +199,25 @@ LayeredShape::LayeredShape(std::initializer_list<std::shared_ptr<Shape>> i) : _s
 		if (shape->getWidth() > width) {
 			width = shape->getWidth();
 		}
-		_shape_.push_back(shape);
 	}
 
 	_height_ = height;
 	_width_ = width;
 }
+
 double LayeredShape::getHeight() const {
+
 	return _height_;
 }
 double LayeredShape::getWidth() const {
 	return _width_;
 }
-void LayeredShape::generatePostScript(std::ostream& os) const {
-	os << "gsave\n";
-	for (const auto& shape : _shape_) {
-		shape->generatePostScript(os);
-	}
-	os << "grestore\n\n";
-}
+
+void LayeredShape::moveToPosition(int index, std::ostream& os) const {}
 
 // VerticalShape
 
-VerticalShape::VerticalShape(std::initializer_list<std::shared_ptr<Shape>> i) : _shape_(i) {
+VerticalShape::VerticalShape(std::initializer_list<std::shared_ptr<Shape>> i) : GeneratePoscriptTemplate(i) {
 	double height = 0.0;
 	double width = 0.0;
 	for (auto shape : i) {
@@ -218,26 +238,18 @@ double VerticalShape::getHeight() const {
 double VerticalShape::getWidth() const {
 	return _width_;
 }
-void VerticalShape::generatePostScript(std::ostream& os) const {
-
+void VerticalShape::moveToPosition(int index, std::ostream& os) const  {
 	auto maxHeight = 0.0;
-	for (auto i = 0; i < _shape_.size(); ++i) {
-		os << " gsave\n";
-
-		if (i > 0) {
-			maxHeight += _shape_[i - 1] -> getHeight();
-			os << "0 " << maxHeight<< " " << "translate\n";
-		}
-		_shape_[i]->generatePostScript(os);
-		os << " grestore\n";
+	for (auto i = 1u; i <= index; ++i) {
+		maxHeight = getShapes()[i-1]->getHeight();
 	}
-
+	os << "0 " << maxHeight << " " << "translate\n";
 }
 
 
 // HorizontalShape
 
-HorizontalShape::HorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i) : _shape_(i) {
+HorizontalShape::HorizontalShape(std::initializer_list<std::shared_ptr<Shape>> i) : GeneratePoscriptTemplate(i) {
 	double height = 0.0;
 	double width = 0.0;
 	for (const auto shape : i) {
@@ -258,17 +270,12 @@ double HorizontalShape::getHeight() const {
 double HorizontalShape::getWidth() const {
 	return _width_;
 }
-void HorizontalShape::generatePostScript(std::ostream& os) const {
-
-	os << " gsave\n";
-
-	for (const auto shape : _shape_) {
-		os << shape->getWidth() / 2.0 << " 0 translate \n";
-		shape->generatePostScript(os);
-		os << shape->getWidth() / 2.0 << " 0 translate \n";
+void HorizontalShape::moveToPosition(int index, std::ostream& os) const {
+	auto maxwidth = 0.0;
+	for (auto i = 1u; i <= index; ++i) {
+		maxwidth = getShapes()[i - 1]->getWidth() / 2.0+getShapes()[i]->getWidth()/2.0;
 	}
-
-	os << " grestore\n";
+	os  << maxwidth<< " 0 " << "translate\n";
 }
 
 // Custom arcOfShapes
